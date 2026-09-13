@@ -2,6 +2,7 @@ package com.artemkhateev.carlog.data
 
 import android.annotation.SuppressLint
 import android.content.Context
+import com.artemkhateev.carlog.data.backup.DataTransfer
 import com.artemkhateev.carlog.data.db.CarLogDatabase
 import com.artemkhateev.carlog.data.reminders.ReminderScheduler
 import com.artemkhateev.carlog.data.settings.SettingsRepository
@@ -32,4 +33,6 @@ object AppGraph {
     val currentVehicle: CurrentVehicle by lazy { CurrentVehicle(repository, settings, appScope) }
 
     val reminderScheduler: ReminderScheduler by lazy { ReminderScheduler(context) }
+
+    val dataTransfer: DataTransfer by lazy { DataTransfer(database.backupDao(), repository, context.contentResolver) }
 }

@@ -27,6 +27,8 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 abstract class CarLogDatabase : RoomDatabase() {
     abstract fun dao(): CarLogDao
 
+    abstract fun backupDao(): BackupDao
+
     companion object {
         fun build(context: Context): CarLogDatabase {
             val defaults = DefaultCatalogs.from(context.resources)

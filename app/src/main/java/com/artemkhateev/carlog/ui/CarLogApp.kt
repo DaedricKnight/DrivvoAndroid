@@ -24,16 +24,28 @@ import com.artemkhateev.carlog.data.CurrentVehicle
 import com.artemkhateev.carlog.data.settings.AppSettings
 import com.artemkhateev.carlog.data.settings.SettingsRepository
 import com.artemkhateev.carlog.data.settings.ThemeMode
+import com.artemkhateev.carlog.feature.catalogs.CatalogScreen
+import com.artemkhateev.carlog.feature.catalogs.FuelsScreen
 import com.artemkhateev.carlog.feature.entry.EntryEditorScreen
+import com.artemkhateev.carlog.feature.flex.FlexCalculatorScreen
 import com.artemkhateev.carlog.feature.main.MainScreen
+import com.artemkhateev.carlog.feature.places.PlacesScreen
 import com.artemkhateev.carlog.feature.reminders.ReminderEditorScreen
+import com.artemkhateev.carlog.feature.search.SearchScreen
+import com.artemkhateev.carlog.feature.settings.SettingsScreen
 import com.artemkhateev.carlog.feature.vehicles.VehicleEditorScreen
 import com.artemkhateev.carlog.feature.vehicles.VehiclesScreen
 import com.artemkhateev.carlog.ui.format.Formats
 import com.artemkhateev.carlog.ui.navigation.AppNavigator
+import com.artemkhateev.carlog.ui.navigation.CatalogRoute
 import com.artemkhateev.carlog.ui.navigation.EntryEditorRoute
+import com.artemkhateev.carlog.ui.navigation.FlexCalculatorRoute
+import com.artemkhateev.carlog.ui.navigation.FuelsRoute
 import com.artemkhateev.carlog.ui.navigation.MainRoute
+import com.artemkhateev.carlog.ui.navigation.PlacesRoute
 import com.artemkhateev.carlog.ui.navigation.ReminderEditorRoute
+import com.artemkhateev.carlog.ui.navigation.SearchRoute
+import com.artemkhateev.carlog.ui.navigation.SettingsRoute
 import com.artemkhateev.carlog.ui.navigation.VehicleEditorRoute
 import com.artemkhateev.carlog.ui.navigation.VehiclesRoute
 import com.artemkhateev.carlog.ui.theme.CarLogTheme
@@ -87,6 +99,12 @@ fun CarLogApp() {
             composable<VehiclesRoute> { VehiclesScreen(navigator) }
             composable<EntryEditorRoute> { EntryEditorScreen(it.toRoute(), navigator) }
             composable<ReminderEditorRoute> { ReminderEditorScreen(it.toRoute(), navigator) }
+            composable<CatalogRoute> { CatalogScreen(it.toRoute(), navigator) }
+            composable<FuelsRoute> { FuelsScreen(navigator) }
+            composable<PlacesRoute> { PlacesScreen(navigator) }
+            composable<SettingsRoute> { SettingsScreen(navigator) }
+            composable<FlexCalculatorRoute> { FlexCalculatorScreen(navigator) }
+            composable<SearchRoute> { SearchScreen(navigator) }
         }
     }
 }

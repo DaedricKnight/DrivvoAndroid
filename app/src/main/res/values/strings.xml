@@ -279,16 +279,17 @@
 
     <!-- Flex -->
     <string name="flex_title">Flex calculator</string>
-    <string name="flex_hint">Which fuel is cheaper per distance. Without consumption figures the usual rule applies: ethanol pays off below 70%% of the gasoline price.</string>
-    <string name="flex_first_price">Gasoline price</string>
-    <string name="flex_second_price">Ethanol price</string>
-    <string name="flex_first_consumption">Gasoline efficiency (%1$s)</string>
-    <string name="flex_second_consumption">Ethanol efficiency (%1$s)</string>
-    <string name="flex_ratio">Price ratio: %1$s%%</string>
-    <string name="flex_first_wins">Gasoline is cheaper</string>
-    <string name="flex_second_wins">Ethanol is cheaper</string>
+    <string name="flex_hint">Which of two fuels costs less per distance — gasoline or LPG, gasoline or ethanol. Enter both efficiencies for an exact answer; without them the usual ethanol rule applies: fuel 2 pays off below 70%% of the fuel 1 price.</string>
+    <string name="flex_first_price">Fuel 1 price</string>
+    <string name="flex_second_price">Fuel 2 price</string>
+    <string name="flex_first_consumption">Fuel 1, %1$s</string>
+    <string name="flex_second_consumption">Fuel 2, %1$s</string>
+    <string name="flex_ratio">Fuel 2 costs %1$s of fuel 1</string>
+    <string name="flex_first_wins">Fuel 1 is cheaper</string>
+    <string name="flex_second_wins">Fuel 2 is cheaper</string>
     <string name="flex_equal">Both cost the same</string>
-    <string name="flex_cost_per_distance">%1$s per %2$s</string>
+    <string name="flex_first_cost">Fuel 1: %1$s per %2$s</string>
+    <string name="flex_second_cost">Fuel 2: %1$s per %2$s</string>
 
     <!-- Поиск -->
     <string name="search_hint">Search records</string>
