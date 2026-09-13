@@ -1,0 +1,8 @@
+# Серии моделей (car model series, model series): «Golf», «Corolla» заведены именно так, а поколения — отдельными моделями.
+SELECT ?model ?modelLabel ?brand ?brandLabel ?links WHERE {
+  VALUES ?type { wd:Q59773381 wd:Q811701 }
+  ?model wdt:P31 ?type ;
+         wikibase:sitelinks ?links .
+  { ?model wdt:P1716 ?brand } UNION { ?model wdt:P176 ?brand . FILTER NOT EXISTS { ?model wdt:P1716 [] } }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en,mul,de,fr,it,es,cs,pl". }
+}

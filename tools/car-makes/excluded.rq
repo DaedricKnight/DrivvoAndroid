@@ -1,0 +1,10 @@
+# Модели, которые одновременно гоночные, грузовые, военные, прототипы, платформы и прочее — в список не идут.
+SELECT DISTINCT ?model WHERE {
+  VALUES ?type {
+    wd:Q90834785 wd:Q21546143 wd:Q137188246 wd:Q100710213 wd:Q23039057 wd:Q207977 wd:Q4167410 wd:Q632300
+    wd:Q1068107 wd:Q15057020 wd:Q23866334 wd:Q1743827 wd:Q137188255 wd:Q253623 wd:Q5037279 wd:Q126351
+    wd:Q18608583 wd:Q20074337 wd:Q114609228 wd:Q850270
+  }
+  { ?model wdt:P31 wd:Q3231690 } UNION { ?model wdt:P31 wd:Q59773381 } UNION { ?model wdt:P31 wd:Q811701 }
+  ?model wdt:P31 ?type .
+}

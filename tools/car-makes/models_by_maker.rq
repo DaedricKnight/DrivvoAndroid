@@ -1,0 +1,8 @@
+# Модели автомобилей без марки — берём производителя (P176). Часто это концерн, марку достаёт сборщик из названия.
+SELECT ?model ?modelLabel ?brand ?brandLabel ?links WHERE {
+  ?model wdt:P31 wd:Q3231690 ;
+         wdt:P176 ?brand ;
+         wikibase:sitelinks ?links .
+  FILTER NOT EXISTS { ?model wdt:P1716 [] }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en,mul,de,fr,it,es,cs,pl". }
+}

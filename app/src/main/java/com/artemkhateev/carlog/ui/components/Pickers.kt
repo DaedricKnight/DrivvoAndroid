@@ -175,7 +175,7 @@ fun <T> MultiOptionSheet(
 }
 
 @Composable
-private fun SheetTitle(title: String, modifier: Modifier = Modifier) {
+internal fun SheetTitle(title: String, modifier: Modifier = Modifier) {
     Text(
         text = title,
         style = CarLogTheme.typography.cardTitle,
@@ -185,7 +185,7 @@ private fun SheetTitle(title: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun OptionRow(label: String, selected: Boolean, onClick: () -> Unit) {
+internal fun OptionRow(label: String, selected: Boolean, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

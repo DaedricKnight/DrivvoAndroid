@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.artemkhateev.carlog.data.CarLogRepository
 import com.artemkhateev.carlog.data.CurrentVehicle
+import com.artemkhateev.carlog.data.makes.CarMake
+import com.artemkhateev.carlog.data.makes.CarMakesCatalog
 import com.artemkhateev.carlog.data.model.Fuel
 import com.artemkhateev.carlog.data.model.FuelCategory
 import com.artemkhateev.carlog.data.model.Reading
@@ -16,7 +18,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -28,8 +32,14 @@ class VehicleEditorViewModel(
     private val repository: CarLogRepository,
     private val settings: SettingsRepository,
     private val currentVehicle: CurrentVehicle,
+    carMakes: CarMakesCatalog,
     private val now: () -> LocalDateTime = { LocalDateTime.now() },
 ) : ViewModel() {
+
+    /** Пусто, пока список марок читается. Без него марку и модель всё равно можно ввести текстом. */
+    val makes: StateFlow<List<CarMake>> = flow { emit(carMakes.makes()) }
+        .catch { emit(emptyList()) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     /** Черновик — состояние Compose, чтобы поля ввода получали свой текст в том же кадре. null — машина грузится. */
     var draft by mutableStateOf<VehicleDraft?>(null)

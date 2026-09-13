@@ -109,6 +109,8 @@
     <string name="vehicle_current_odometer">Current odometer</string>
     <string name="vehicle_currency">Currency</string>
     <string name="vehicle_delete_message">%1$s and all of its records and reminders will be deleted permanently.</string>
+    <string name="vehicle_models_empty">No models for this make in the list — type the model above</string>
+    <string name="use_typed">Use “%1$s”</string>
 
     <!-- История -->
     <string name="history_reminders">Reminders</string>

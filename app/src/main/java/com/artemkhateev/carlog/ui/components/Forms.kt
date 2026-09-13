@@ -35,6 +35,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -173,13 +177,17 @@ fun FormPickerField(
             supportingText = error?.let { { Text(it, color = CarLogTheme.colors.danger) } },
             trailingIcon = trailingIcon?.let { { Icon(it, contentDescription = null) } },
             colors = underlineColors(),
-            modifier = Modifier.fillMaxWidth(),
+            // Для TalkBack это не отключённый ввод, а кнопка поверх — у неё и подпись, и значение.
+            modifier = Modifier
+                .fillMaxWidth()
+                .clearAndSetSemantics {},
         )
         // Отключённое поле нажатий не получает: ловим их поверх.
         Box(
             Modifier
                 .matchParentSize()
-                .clickable(onClick = onClick),
+                .clickable(role = Role.Button, onClick = onClick)
+                .semantics { contentDescription = listOf(label, value, error.orEmpty()).filter { it.isNotBlank() }.joinToString(", ") },
         )
     }
 }

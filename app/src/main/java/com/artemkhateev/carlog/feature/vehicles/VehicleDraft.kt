@@ -1,5 +1,6 @@
 package com.artemkhateev.carlog.feature.vehicles
 
+import com.artemkhateev.carlog.data.makes.searchKey
 import com.artemkhateev.carlog.data.model.Vehicle
 import com.artemkhateev.carlog.data.model.Volume
 import com.artemkhateev.carlog.ui.format.parseVolume
@@ -37,6 +38,10 @@ data class VehicleDraft(
     val initialOdometer: Long? get() = parseWhole(odometerText)
 
     val isValid: Boolean get() = displayName.isNotEmpty() && yearValid && tankValid
+
+    /** Другая марка — модель прежней к ней не подходит. */
+    fun withMake(make: String): VehicleDraft =
+        if (searchKey(make) == searchKey(this.make)) copy(make = make) else copy(make = make, model = "")
 
     fun toVehicle(): Vehicle? {
         if (!isValid) return null

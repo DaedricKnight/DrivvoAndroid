@@ -60,6 +60,11 @@ room {
     schemaDirectory("$projectDir/schemas")
 }
 
+tasks.withType<Test>().configureEach {
+    // CarMakesFileTest читает список марок из assets: без этого после пересборки списка Gradle тест не перезапустит.
+    inputs.file("src/main/assets/car_makes.json")
+}
+
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)

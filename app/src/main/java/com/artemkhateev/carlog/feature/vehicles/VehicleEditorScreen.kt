@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -42,6 +43,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.artemkhateev.carlog.R
 import com.artemkhateev.carlog.data.AppGraph
+import com.artemkhateev.carlog.data.makes.modelsOf
 import com.artemkhateev.carlog.ui.components.ConfirmDialog
 import com.artemkhateev.carlog.ui.components.CurrencySheet
 import com.artemkhateev.carlog.ui.components.EditorScaffold
@@ -50,6 +52,7 @@ import com.artemkhateev.carlog.ui.components.FormRow
 import com.artemkhateev.carlog.ui.components.FormSwitchRow
 import com.artemkhateev.carlog.ui.components.FormTextField
 import com.artemkhateev.carlog.ui.components.OptionSheet
+import com.artemkhateev.carlog.ui.components.SearchableSheet
 import com.artemkhateev.carlog.ui.format.sanitizeDecimalInput
 import com.artemkhateev.carlog.ui.format.sanitizeWholeInput
 import com.artemkhateev.carlog.ui.navigation.AppNavigator
@@ -60,8 +63,9 @@ import com.artemkhateev.carlog.ui.theme.VehicleColors
 @Composable
 fun VehicleEditorScreen(route: VehicleEditorRoute, navigator: AppNavigator) {
     val viewModel: VehicleEditorViewModel = viewModel {
-        VehicleEditorViewModel(route.id, AppGraph.repository, AppGraph.settings, AppGraph.currentVehicle)
+        VehicleEditorViewModel(route.id, AppGraph.repository, AppGraph.settings, AppGraph.currentVehicle, AppGraph.carMakes)
     }
+    val makes by viewModel.makes.collectAsStateWithLifecycle()
     val draft = viewModel.draft
     val fuels by viewModel.fuels.collectAsStateWithLifecycle()
     val currencyCode by viewModel.currencyCode.collectAsStateWithLifecycle()
@@ -77,6 +81,8 @@ fun VehicleEditorScreen(route: VehicleEditorRoute, navigator: AppNavigator) {
     var confirmDelete by rememberSaveable { mutableStateOf(false) }
     var fuelSheetOpen by rememberSaveable { mutableStateOf(false) }
     var currencySheetOpen by rememberSaveable { mutableStateOf(false) }
+    var makeSheetOpen by rememberSaveable { mutableStateOf(false) }
+    var modelSheetOpen by rememberSaveable { mutableStateOf(false) }
     val colors = CarLogTheme.colors
     val formats = CarLogTheme.formats
     val accent = colors.brand
@@ -113,19 +119,17 @@ fun VehicleEditorScreen(route: VehicleEditorRoute, navigator: AppNavigator) {
             )
         }
         FormRow(null) {
-            FormTextField(
-                value = draft.make,
-                onValueChange = { value -> viewModel.update { it.copy(make = value) } },
+            FormPickerField(
                 label = stringResource(R.string.vehicle_make),
-                capitalization = KeyboardCapitalization.Words,
+                value = draft.make,
+                onClick = { makeSheetOpen = true },
                 modifier = Modifier.weight(1f),
             )
             Spacer(Modifier.width(16.dp))
-            FormTextField(
-                value = draft.model,
-                onValueChange = { value -> viewModel.update { it.copy(model = value) } },
+            FormPickerField(
                 label = stringResource(R.string.vehicle_model),
-                capitalization = KeyboardCapitalization.Words,
+                value = draft.model,
+                onClick = { modelSheetOpen = true },
                 modifier = Modifier.weight(1f),
             )
         }
@@ -226,6 +230,26 @@ fun VehicleEditorScreen(route: VehicleEditorRoute, navigator: AppNavigator) {
             onDismiss = { fuelSheetOpen = false },
             onNone = { viewModel.update { it.copy(fuelId = null) } },
             noneSelected = draft.fuelId == null,
+        )
+    }
+    if (makeSheetOpen) {
+        val names = remember(makes) { makes.map { it.name } }
+        SearchableSheet(
+            title = stringResource(R.string.vehicle_make),
+            options = names,
+            selected = draft.make,
+            onSelect = { make -> viewModel.update { it.withMake(make) } },
+            onDismiss = { makeSheetOpen = false },
+        )
+    }
+    if (modelSheetOpen) {
+        SearchableSheet(
+            title = stringResource(R.string.vehicle_model),
+            options = remember(makes, draft.make) { makes.modelsOf(draft.make) },
+            selected = draft.model,
+            onSelect = { model -> viewModel.update { it.copy(model = model) } },
+            onDismiss = { modelSheetOpen = false },
+            emptyHint = stringResource(R.string.vehicle_models_empty),
         )
     }
     if (currencySheetOpen) {
