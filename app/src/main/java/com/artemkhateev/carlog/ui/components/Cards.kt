@@ -49,11 +49,14 @@ fun AppCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -
 fun CardHeader(icon: ImageVector, title: String, accent: Color, modifier: Modifier = Modifier) {
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
         TypeBadge(icon, accent, size = 40.dp, iconSize = 22.dp, shape = RoundedCornerShape(10.dp))
-        Text(
+        BasicText(
             text = title,
-            style = CarLogTheme.typography.cardTitle,
-            color = accent,
-            modifier = Modifier.padding(start = 12.dp),
+            style = CarLogTheme.typography.cardTitle.copy(color = accent),
+            maxLines = 1,
+            autoSize = TextAutoSize.StepBased(minFontSize = 11.sp, maxFontSize = CarLogTheme.typography.cardTitle.fontSize),
+            modifier = Modifier
+                .padding(start = 12.dp)
+                .weight(1f, fill = false),
         )
     }
 }
@@ -99,7 +102,12 @@ fun StatRow(stats: List<Stat>, modifier: Modifier = Modifier) {
         stats.forEachIndexed { index, stat ->
             val end = stats.size > 1 && index == stats.lastIndex
             Column(Modifier.weight(1f), horizontalAlignment = if (end) Alignment.End else Alignment.Start) {
-                Text(stat.label, style = typography.statLabel, color = colors.textSecondary, maxLines = 1)
+                BasicText(
+                    text = stat.label,
+                    style = typography.statLabel.copy(color = colors.textSecondary),
+                    maxLines = 1,
+                    autoSize = TextAutoSize.StepBased(minFontSize = 9.sp, maxFontSize = typography.statLabel.fontSize),
+                )
                 BasicText(
                     text = stat.value,
                     style = typography.statValue.copy(

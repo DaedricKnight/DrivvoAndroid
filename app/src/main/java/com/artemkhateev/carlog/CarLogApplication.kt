@@ -7,5 +7,6 @@ class CarLogApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         AppGraph.init(this)
+        AppGraph.reminderScheduler.scheduleDaily()
     }
 }

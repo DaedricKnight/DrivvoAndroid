@@ -26,12 +26,14 @@ import com.artemkhateev.carlog.data.settings.SettingsRepository
 import com.artemkhateev.carlog.data.settings.ThemeMode
 import com.artemkhateev.carlog.feature.entry.EntryEditorScreen
 import com.artemkhateev.carlog.feature.main.MainScreen
+import com.artemkhateev.carlog.feature.reminders.ReminderEditorScreen
 import com.artemkhateev.carlog.feature.vehicles.VehicleEditorScreen
 import com.artemkhateev.carlog.feature.vehicles.VehiclesScreen
 import com.artemkhateev.carlog.ui.format.Formats
 import com.artemkhateev.carlog.ui.navigation.AppNavigator
 import com.artemkhateev.carlog.ui.navigation.EntryEditorRoute
 import com.artemkhateev.carlog.ui.navigation.MainRoute
+import com.artemkhateev.carlog.ui.navigation.ReminderEditorRoute
 import com.artemkhateev.carlog.ui.navigation.VehicleEditorRoute
 import com.artemkhateev.carlog.ui.navigation.VehiclesRoute
 import com.artemkhateev.carlog.ui.theme.CarLogTheme
@@ -84,6 +86,7 @@ fun CarLogApp() {
             composable<VehicleEditorRoute> { VehicleEditorScreen(it.toRoute(), navigator) }
             composable<VehiclesRoute> { VehiclesScreen(navigator) }
             composable<EntryEditorRoute> { EntryEditorScreen(it.toRoute(), navigator) }
+            composable<ReminderEditorRoute> { ReminderEditorScreen(it.toRoute(), navigator) }
         }
     }
 }

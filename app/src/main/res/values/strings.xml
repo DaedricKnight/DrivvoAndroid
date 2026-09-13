@@ -165,7 +165,7 @@
     <string name="report_estimated_range">Estimated range</string>
     <string name="report_monthly_projection">Monthly projection</string>
     <string name="report_days_value">%1$s days</string>
-    <string name="report_full_tanks">%1$d of %2$d refuelings with a full tank (%3$s%%) — the average is measured from one full tank to the next.</string>
+    <string name="report_full_tanks">%1$d of %2$d refuelings with a full tank (%3$s) — the average is measured from one full tank to the next.</string>
     <string name="report_tank_hint">Set the tank capacity in the vehicle to see the range</string>
     <string name="report_general_chart">Expenses and income chart</string>
     <string name="report_monthly_chart">Monthly expenses chart</string>
@@ -207,6 +207,13 @@
     <string name="reminder_need_type">Choose a type</string>
     <string name="reminder_mark_done">Mark as done</string>
     <string name="reminder_done_message">The reminder will move to its next date, or close if it doesn\'t repeat.</string>
+    <string name="reminders_empty_hint">Plan an oil change, insurance or inspection: tap + and choose Reminder</string>
+    <string name="reminder_every_distance">every %1$s</string>
+    <plurals name="reminder_every_months">
+        <item quantity="one">every month</item>
+        <item quantity="other">every %d months</item>
+    </plurals>
+    <string name="reminder_suggested">First due: %1$s</string>
     <string name="notification_channel_reminders">Reminders</string>
     <string name="notification_reminder_title">%1$s · %2$s</string>
 

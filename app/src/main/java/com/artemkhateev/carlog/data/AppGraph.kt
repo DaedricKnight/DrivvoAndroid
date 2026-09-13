@@ -3,6 +3,7 @@ package com.artemkhateev.carlog.data
 import android.annotation.SuppressLint
 import android.content.Context
 import com.artemkhateev.carlog.data.db.CarLogDatabase
+import com.artemkhateev.carlog.data.reminders.ReminderScheduler
 import com.artemkhateev.carlog.data.settings.SettingsRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,4 +30,6 @@ object AppGraph {
     val settings: SettingsRepository by lazy { SettingsRepository(context) }
 
     val currentVehicle: CurrentVehicle by lazy { CurrentVehicle(repository, settings, appScope) }
+
+    val reminderScheduler: ReminderScheduler by lazy { ReminderScheduler(context) }
 }

@@ -21,7 +21,7 @@ import com.artemkhateev.carlog.ui.navigation.EntryEditorRoute
 @Composable
 fun EntryEditorScreen(route: EntryEditorRoute, navigator: AppNavigator) {
     val viewModel: EntryEditorViewModel = viewModel {
-        EntryEditorViewModel(route.type, route.id, AppGraph.repository, AppGraph.currentVehicle)
+        EntryEditorViewModel(route.type, route.id, AppGraph.repository, AppGraph.currentVehicle, onSaved = AppGraph.reminderScheduler::checkNow)
     }
     val state = viewModel.state.collectAsStateWithLifecycle().value
     val done by viewModel.done.collectAsStateWithLifecycle()

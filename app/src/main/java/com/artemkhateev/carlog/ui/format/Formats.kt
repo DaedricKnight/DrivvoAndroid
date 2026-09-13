@@ -47,6 +47,7 @@ class Formats(
 
     private val symbols = DecimalFormatSymbols.getInstance(locale)
     private val upTo3 = DecimalFormat("0.###", symbols)
+    private val upTo1 = DecimalFormat("0.#", symbols)
     private val whole = DecimalFormat("0", symbols)
 
     private val moneyFormat = NumberFormat.getCurrencyInstance(locale).apply { currency = this@Formats.currency }
@@ -81,12 +82,16 @@ class Formats(
     /** [volumePer100] — расход в единицах учёта; показывается в формате из настроек. */
     fun consumption(volumePer100: Double): String = "${consumptionNumber(volumePer100)} $consumptionLabel"
 
-    fun consumptionNumber(volumePer100: Double): String = upTo3.format(
-        when (consumptionFormat) {
-            ConsumptionFormat.VolumePer100 -> volumePer100
-            ConsumptionFormat.DistancePerVolume -> 100 / volumePer100
-        },
-    )
+    fun consumptionNumber(volumePer100: Double): String = upTo3.format(consumptionValue(volumePer100))
+
+    /** Расход в формате из настроек — для графика. */
+    fun consumptionValue(volumePer100: Double): Double = when (consumptionFormat) {
+        ConsumptionFormat.VolumePer100 -> volumePer100
+        ConsumptionFormat.DistancePerVolume -> 100 / volumePer100
+    }
+
+    /** 84.6% — доля с одним знаком после запятой. */
+    fun percent(value: Double): String = "${upTo1.format(value)}%"
 
     /** Число без единиц: дни между заправками, проценты. */
     fun decimal(value: Double): String = upTo3.format(value)

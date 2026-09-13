@@ -55,6 +55,8 @@ class EntryEditorViewModel(
     private val entryId: Long,
     private val repository: CarLogRepository,
     private val currentVehicle: CurrentVehicle,
+    /** Записи поменялись — сроки напоминаний по пробегу стоит проверить сразу. */
+    private val onSaved: () -> Unit = {},
     private val now: () -> LocalDateTime = { LocalDateTime.now() },
 ) : ViewModel() {
 
@@ -122,6 +124,7 @@ class EntryEditorViewModel(
             }
             repository.saveEntry(entry)
             rescheduleReminders(entry, entries)
+            onSaved()
             mutableDone.value = true
         }
     }
