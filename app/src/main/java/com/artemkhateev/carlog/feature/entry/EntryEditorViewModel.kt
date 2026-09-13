@@ -1,5 +1,9 @@
 package com.artemkhateev.carlog.feature.entry
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.artemkhateev.carlog.data.CarLogRepository
@@ -17,7 +21,6 @@ import com.artemkhateev.carlog.data.model.Vehicle
 import com.artemkhateev.carlog.domain.lastOdometer
 import com.artemkhateev.carlog.domain.odometerBounds
 import com.artemkhateev.carlog.domain.remindersAfterEntry
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -28,14 +31,12 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+/** Всё, что форма показывает рядом с черновиком. Собирается на экране из черновика и [EditorData]. */
 data class EntryEditorUiState(
     val draft: EntryDraft,
     val isNew: Boolean,
@@ -49,6 +50,9 @@ data class EntryEditorUiState(
     val previousEndOdometer: Long?,
 )
 
+/** То, что меняется не от ввода: записи машины из формы, машины и справочники. */
+data class EditorData(val entries: List<Entry>, val vehicles: List<Vehicle>, val catalogs: Catalogs)
+
 @OptIn(ExperimentalCoroutinesApi::class)
 class EntryEditorViewModel(
     private val type: EntryType,
@@ -60,65 +64,66 @@ class EntryEditorViewModel(
     private val now: () -> LocalDateTime = { LocalDateTime.now() },
 ) : ViewModel() {
 
-    private val draft = MutableStateFlow<EntryDraft?>(null)
-    private val showErrors = MutableStateFlow(false)
+    /**
+     * Черновик — состояние Compose, а не Flow: поле ввода должно получить свой текст в том же кадре.
+     * Пока значение идёт через поток, поле успевает показать старый текст и сбрасывает курсор в начало.
+     */
+    var draft by mutableStateOf<EntryDraft?>(null)
+        private set
+
+    /** Ошибки показываем после первой попытки сохранить, а не пока человек ещё печатает. */
+    var showErrors by mutableStateOf(false)
+        private set
+
     private val mutableDone = MutableStateFlow(false)
 
     /** Запись сохранена или удалена — экран пора закрыть. */
     val done: StateFlow<Boolean> = mutableDone.asStateFlow()
 
     /** Записи той машины, что выбрана в форме: машину можно сменить прямо в ней. */
-    private val vehicleEntries = draft
+    val data: StateFlow<EditorData?> = snapshotFlow { draft?.vehicleId }
         .filterNotNull()
-        .map { it.vehicleId }
         .distinctUntilChanged()
-        .flatMapLatest { repository.entries(it) }
-
-    val state: StateFlow<EntryEditorUiState?> =
-        combine(draft.filterNotNull(), vehicleEntries, repository.vehicles, repository.catalogs, showErrors) { current, entries, vehicles, catalogs, show ->
-            val bounds = boundsFor(entries)
-            EntryEditorUiState(
-                draft = current,
-                isNew = entryId == 0L,
-                vehicles = vehicles,
-                catalogs = catalogs,
-                errors = if (show) current.errors(bounds) else emptyMap(),
-                previousOdometer = bounds.at(current.dateTime).min,
-                previousEndOdometer = (current as? RouteDraft)?.let { bounds.at(it.end).min },
-            )
+        .flatMapLatest { vehicleId ->
+            combine(repository.entries(vehicleId), repository.vehicles, repository.catalogs) { entries, vehicles, catalogs ->
+                EditorData(entries, vehicles, catalogs)
+            }
         }
-            .flowOn(Dispatchers.Default)
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    /** Сохранение уже идёт: второе нажатие не должно создать вторую запись. */
+    private var saving = false
 
     init {
         viewModelScope.launch {
             val loaded = if (entryId != 0L) {
                 repository.entry(type, entryId)?.toDraft()
             } else {
-                val data = currentVehicle.data.filterNotNull().first()
-                newDraft(type, data.vehicle, data.entries, now())
+                val current = currentVehicle.data.filterNotNull().first()
+                newDraft(type, current.vehicle, current.entries, now())
             }
             // Запись могли удалить, пока экран открывался.
-            if (loaded == null) mutableDone.value = true else draft.value = loaded
+            if (loaded == null) mutableDone.value = true else draft = loaded
         }
     }
 
     fun update(change: (EntryDraft) -> EntryDraft) {
-        draft.update { it?.let(change) }
+        draft = draft?.let(change)
     }
 
-    /** Сохранение уже идёт: второе нажатие не должно создать вторую запись. */
-    private var saving = false
+    fun boundsFor(entries: List<Entry>) = BoundsAt { at ->
+        odometerBounds(entries, at, editing = if (entryId != 0L) type to entryId else null)
+    }
 
     fun save() {
+        val current = draft ?: return
         if (saving) return
         saving = true
         viewModelScope.launch {
-            val current = draft.value
-            val entries = current?.let { repository.entries(it.vehicleId).first() }
-            val entry = if (current != null && entries != null) current.toEntry(boundsFor(entries)) else null
-            if (entry == null || entries == null) {
-                showErrors.value = true
+            val entries = repository.entries(current.vehicleId).first()
+            val entry = current.toEntry(boundsFor(entries))
+            if (entry == null) {
+                showErrors = true
                 saving = false
                 return@launch
             }
@@ -157,10 +162,6 @@ class EntryEditorViewModel(
             val id = repository.saveFuel(Fuel(name = name, category = FuelCategory.Other))
             update { select(it, id) }
         }
-    }
-
-    private fun boundsFor(entries: List<Entry>) = BoundsAt { at ->
-        odometerBounds(entries, at, editing = if (entryId != 0L) type to entryId else null)
     }
 
     private suspend fun rescheduleReminders(entry: Entry, entriesBefore: List<Entry>) {

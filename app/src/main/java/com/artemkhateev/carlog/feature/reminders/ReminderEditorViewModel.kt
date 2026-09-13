@@ -1,5 +1,9 @@
 package com.artemkhateev.carlog.feature.reminders
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.artemkhateev.carlog.data.CarLogRepository
@@ -15,17 +19,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
+/** Всё, что форма показывает рядом с черновиком; собирается на экране. */
 data class ReminderEditorUiState(
     val draft: ReminderDraft,
     val isNew: Boolean,
@@ -43,37 +46,31 @@ class ReminderEditorViewModel(
     private val currentVehicle: CurrentVehicle,
     /** Напоминание поменялось — пусть проверка сроков пройдёт сразу, а не завтра. */
     private val onChanged: () -> Unit = {},
-    private val today: () -> LocalDate = { LocalDate.now() },
+    val today: () -> LocalDate = { LocalDate.now() },
 ) : ViewModel() {
 
-    private val draft = MutableStateFlow<ReminderDraft?>(null)
-    private val showErrors = MutableStateFlow(false)
+    /** Черновик — состояние Compose, чтобы поля ввода получали свой текст в том же кадре. */
+    var draft by mutableStateOf<ReminderDraft?>(null)
+        private set
+
+    var showErrors by mutableStateOf(false)
+        private set
+
+    val catalogs: StateFlow<Catalogs?> = repository.catalogs.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    /** Пробег машины напоминания — не обязательно той, что выбрана сейчас. */
+    val currentOdometer: StateFlow<Long?> = snapshotFlow { draft?.vehicleId }
+        .filterNotNull()
+        .distinctUntilChanged()
+        .flatMapLatest { id -> repository.entries(id).map { lastOdometer(it) } }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
     private val mutableDone = MutableStateFlow(false)
 
     /** Сохранено, выполнено или удалено — экран пора закрыть. */
     val done: StateFlow<Boolean> = mutableDone.asStateFlow()
 
     private var busy = false
-
-    /** Пробег машины напоминания — не обязательно той, что выбрана сейчас. */
-    private val odometer = draft
-        .filterNotNull()
-        .map { it.vehicleId }
-        .distinctUntilChanged()
-        .flatMapLatest { id -> repository.entries(id).map { lastOdometer(it) } }
-
-    val state: StateFlow<ReminderEditorUiState?> =
-        combine(draft.filterNotNull(), repository.catalogs, odometer, showErrors) { current, catalogs, odometer, show ->
-            val date = today()
-            ReminderEditorUiState(
-                draft = current,
-                isNew = reminderId == 0L,
-                catalogs = catalogs,
-                currentOdometer = odometer,
-                today = date,
-                errors = if (show) current.errors(odometer, date) else emptySet(),
-            )
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     init {
         viewModelScope.launch {
@@ -82,27 +79,26 @@ class ReminderEditorViewModel(
             } else {
                 ReminderDraft(vehicleId = currentVehicle.data.filterNotNull().first().vehicle.id)
             }
-            if (loaded == null) mutableDone.value = true else draft.value = loaded
+            if (loaded == null) mutableDone.value = true else draft = loaded
         }
     }
 
     fun update(change: (ReminderDraft) -> ReminderDraft) {
-        draft.update { it?.let(change) }
+        draft = draft?.let(change)
     }
 
     /** Проверка до сохранения: разрешение на уведомления спрашиваем только у готового напоминания. */
     fun validate(): Boolean {
-        val current = state.value ?: return false
-        val valid = current.draft.errors(current.currentOdometer, current.today).isEmpty()
-        if (!valid) showErrors.value = true
+        val current = draft ?: return false
+        val valid = current.errors(currentOdometer.value, today()).isEmpty()
+        if (!valid) showErrors = true
         return valid
     }
 
     fun save() {
-        val current = state.value ?: return
-        val reminder = current.draft.toReminder(current.currentOdometer, current.today)
+        val reminder = draft?.toReminder(currentOdometer.value, today())
         if (reminder == null) {
-            showErrors.value = true
+            showErrors = true
             return
         }
         if (busy) return
@@ -116,13 +112,14 @@ class ReminderEditorViewModel(
 
     /** Выполнено: повторяющееся переносится от сегодня и нынешнего пробега, разовое закрывается. */
     fun markDone() {
-        val current = state.value ?: return
-        val reminder = current.draft.toReminder(current.currentOdometer, current.today) ?: return
+        val odometer = currentOdometer.value
+        val date = today()
+        val reminder = draft?.toReminder(odometer, date) ?: return
         if (busy || reminderId == 0L) return
         busy = true
         viewModelScope.launch {
             if (reminder.repeats) {
-                repository.saveReminder(reminder.rescheduled(current.currentOdometer, current.today))
+                repository.saveReminder(reminder.rescheduled(odometer, date))
             } else {
                 repository.deleteReminder(reminderId)
             }
@@ -141,7 +138,7 @@ class ReminderEditorViewModel(
     }
 
     fun addType(name: String) {
-        val kind = draft.value?.kind ?: return
+        val kind = draft?.kind ?: return
         viewModelScope.launch {
             val catalogKind = if (kind == ReminderKind.Service) CatalogKind.ServiceType else CatalogKind.ExpenseType
             val id = repository.saveCatalogItem(CatalogItem(kind = catalogKind, name = name))

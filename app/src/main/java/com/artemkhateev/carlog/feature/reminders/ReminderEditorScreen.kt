@@ -60,7 +60,9 @@ fun ReminderEditorScreen(route: ReminderEditorRoute, navigator: AppNavigator) {
     val viewModel: ReminderEditorViewModel = viewModel {
         ReminderEditorViewModel(route.id, AppGraph.repository, AppGraph.currentVehicle, onChanged = AppGraph.reminderScheduler::checkNow)
     }
-    val state = viewModel.state.collectAsStateWithLifecycle().value
+    val draft = viewModel.draft
+    val catalogs = viewModel.catalogs.collectAsStateWithLifecycle().value
+    val currentOdometer by viewModel.currentOdometer.collectAsStateWithLifecycle()
     val done by viewModel.done.collectAsStateWithLifecycle()
     LaunchedEffect(done) {
         if (done) navigator.back()
@@ -87,7 +89,16 @@ fun ReminderEditorScreen(route: ReminderEditorRoute, navigator: AppNavigator) {
         },
         onDelete = if (route.id == 0L) null else ({ confirmDelete = true }),
     ) {
-        if (state != null) {
+        if (draft != null && catalogs != null) {
+            val today = viewModel.today()
+            val state = ReminderEditorUiState(
+                draft = draft,
+                isNew = route.id == 0L,
+                catalogs = catalogs,
+                currentOdometer = currentOdometer,
+                today = today,
+                errors = if (viewModel.showErrors) draft.errors(currentOdometer, today) else emptySet(),
+            )
             ReminderForm(state, viewModel, onMarkDone = { confirmDone = true })
         }
     }

@@ -62,10 +62,10 @@ fun VehicleEditorScreen(route: VehicleEditorRoute, navigator: AppNavigator) {
     val viewModel: VehicleEditorViewModel = viewModel {
         VehicleEditorViewModel(route.id, AppGraph.repository, AppGraph.settings, AppGraph.currentVehicle)
     }
-    val draft = viewModel.draft.collectAsStateWithLifecycle().value
+    val draft = viewModel.draft
     val fuels by viewModel.fuels.collectAsStateWithLifecycle()
     val currencyCode by viewModel.currencyCode.collectAsStateWithLifecycle()
-    val showErrors by viewModel.showErrors.collectAsStateWithLifecycle()
+    val showErrors = viewModel.showErrors
     val done by viewModel.done.collectAsStateWithLifecycle()
     LaunchedEffect(done) {
         if (done) {

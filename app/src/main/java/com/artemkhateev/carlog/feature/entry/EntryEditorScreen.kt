@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
@@ -23,7 +24,8 @@ fun EntryEditorScreen(route: EntryEditorRoute, navigator: AppNavigator) {
     val viewModel: EntryEditorViewModel = viewModel {
         EntryEditorViewModel(route.type, route.id, AppGraph.repository, AppGraph.currentVehicle, onSaved = AppGraph.reminderScheduler::checkNow)
     }
-    val state = viewModel.state.collectAsStateWithLifecycle().value
+    val draft = viewModel.draft
+    val data = viewModel.data.collectAsStateWithLifecycle().value
     val done by viewModel.done.collectAsStateWithLifecycle()
     LaunchedEffect(done) {
         if (done) navigator.back()
@@ -37,8 +39,19 @@ fun EntryEditorScreen(route: EntryEditorRoute, navigator: AppNavigator) {
         onSave = viewModel::save,
         onDelete = if (route.id == 0L) null else ({ confirmDelete = true }),
     ) {
-        if (state != null) {
-            when (val draft = state.draft) {
+        if (draft != null && data != null) {
+            // Границы одометра зависят только от записей, ошибки и подсказки — от черновика: считаются на ходу.
+            val bounds = remember(data.entries) { viewModel.boundsFor(data.entries) }
+            val state = EntryEditorUiState(
+                draft = draft,
+                isNew = route.id == 0L,
+                vehicles = data.vehicles,
+                catalogs = data.catalogs,
+                errors = if (viewModel.showErrors) draft.errors(bounds) else emptyMap(),
+                previousOdometer = bounds.at(draft.dateTime).min,
+                previousEndOdometer = (draft as? RouteDraft)?.let { bounds.at(it.end).min },
+            )
+            when (draft) {
                 is RefuelingDraft -> RefuelingForm(draft, state, viewModel)
                 is ItemizedDraft -> ItemizedForm(draft, state, viewModel)
                 is IncomeDraft -> IncomeForm(draft, state, viewModel)

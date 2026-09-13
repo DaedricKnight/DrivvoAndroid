@@ -1,5 +1,8 @@
 package com.artemkhateev.carlog.feature.vehicles
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.artemkhateev.carlog.data.CarLogRepository
@@ -16,7 +19,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -29,10 +31,13 @@ class VehicleEditorViewModel(
     private val now: () -> LocalDateTime = { LocalDateTime.now() },
 ) : ViewModel() {
 
-    private val mutableDraft = MutableStateFlow<VehicleDraft?>(null)
+    /** Черновик — состояние Compose, чтобы поля ввода получали свой текст в том же кадре. null — машина грузится. */
+    var draft by mutableStateOf<VehicleDraft?>(null)
+        private set
 
-    /** null — машина ещё грузится. */
-    val draft: StateFlow<VehicleDraft?> = mutableDraft.asStateFlow()
+    /** Ошибки показываем после первой попытки сохранить, а не пока человек ещё печатает. */
+    var showErrors by mutableStateOf(false)
+        private set
 
     val fuels: StateFlow<List<Fuel>> = repository.catalogs.map { it.fuels }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
@@ -40,19 +45,17 @@ class VehicleEditorViewModel(
     val currencyCode: StateFlow<String?> = settings.settings.map { it.currencyCode }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
-    private val mutableShowErrors = MutableStateFlow(false)
-
-    /** Ошибки показываем после первой попытки сохранить, а не пока человек ещё печатает. */
-    val showErrors: StateFlow<Boolean> = mutableShowErrors.asStateFlow()
-
     private val mutableDone = MutableStateFlow(false)
 
     /** Машина сохранена или удалена — экран пора закрыть. */
     val done: StateFlow<Boolean> = mutableDone.asStateFlow()
 
+    /** Сохранение уже идёт: второе нажатие не должно создать вторую машину. */
+    private var saving = false
+
     init {
         viewModelScope.launch {
-            mutableDraft.value = if (vehicleId == 0L) {
+            draft = if (vehicleId == 0L) {
                 val count = repository.vehicles.first().size
                 val gasoline = repository.catalogs.first().fuels.firstOrNull { it.category == FuelCategory.Gasoline }
                 VehicleDraft(colorIndex = count % VehicleColors.size, fuelId = gasoline?.id)
@@ -63,21 +66,18 @@ class VehicleEditorViewModel(
     }
 
     fun update(change: (VehicleDraft) -> VehicleDraft) {
-        mutableDraft.update { it?.let(change) }
+        draft = draft?.let(change)
     }
 
     fun setCurrency(code: String) {
         viewModelScope.launch { settings.setCurrency(code) }
     }
 
-    /** Сохранение уже идёт: второе нажатие не должно создать вторую машину. */
-    private var saving = false
-
     fun save() {
-        val draft = mutableDraft.value ?: return
-        val vehicle = draft.toVehicle()
+        val current = draft ?: return
+        val vehicle = current.toVehicle()
         if (vehicle == null) {
-            mutableShowErrors.value = true
+            showErrors = true
             return
         }
         if (saving) return
@@ -85,7 +85,7 @@ class VehicleEditorViewModel(
         viewModelScope.launch {
             val id = repository.saveVehicle(vehicle)
             if (vehicleId == 0L) {
-                draft.initialOdometer?.let { odometer ->
+                current.initialOdometer?.let { odometer ->
                     repository.saveEntry(Reading(vehicleId = id, dateTime = now().truncatedTo(ChronoUnit.MINUTES), odometer = odometer))
                 }
                 // Новую машину добавляли, чтобы вести: она сразу становится выбранной.
