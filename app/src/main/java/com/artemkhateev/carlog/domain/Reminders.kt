@@ -1,5 +1,6 @@
 package com.artemkhateev.carlog.domain
 
+import com.artemkhateev.carlog.data.model.Catalogs
 import com.artemkhateev.carlog.data.model.Entry
 import com.artemkhateev.carlog.data.model.Expense
 import com.artemkhateev.carlog.data.model.Refueling
@@ -32,6 +33,9 @@ fun dueStatus(dueOdometer: Long?, dueDate: LocalDate?, currentOdometer: Long?, t
 
 fun Reminder.status(currentOdometer: Long?, today: LocalDate): DueStatus =
     dueStatus(dueOdometer, dueDate, currentOdometer, today)
+
+/** Своё название, иначе — вид сервиса или расхода. */
+fun Reminder.displayTitle(catalogs: Catalogs): String = title.ifBlank { catalogs.item(typeId)?.name.orEmpty() }
 
 /** Когда ждать следующую заправку. */
 data class RefuelingForecast(val odometer: Long, val date: LocalDate)

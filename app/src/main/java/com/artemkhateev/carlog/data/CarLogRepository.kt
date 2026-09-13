@@ -20,6 +20,7 @@ import com.artemkhateev.carlog.data.model.Reminder
 import com.artemkhateev.carlog.data.model.Route
 import com.artemkhateev.carlog.data.model.Service
 import com.artemkhateev.carlog.data.model.Vehicle
+import com.artemkhateev.carlog.domain.ReminderUpdate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
@@ -150,6 +151,15 @@ class CarLogRepository(private val dao: CarLogDao) {
     }
 
     suspend fun deleteReminder(id: Long) = dao.deleteReminder(id)
+
+    suspend fun applyReminderUpdates(updates: List<ReminderUpdate>) {
+        for (update in updates) {
+            when (update) {
+                is ReminderUpdate.Reschedule -> saveReminder(update.reminder)
+                is ReminderUpdate.Close -> deleteReminder(update.reminderId)
+            }
+        }
+    }
 
     private suspend fun deleteUnlessReferenced(delete: suspend () -> Unit): Boolean =
         try {

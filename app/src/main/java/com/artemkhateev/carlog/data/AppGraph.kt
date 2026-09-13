@@ -27,4 +27,6 @@ object AppGraph {
     val repository: CarLogRepository by lazy { CarLogRepository(database.dao()) }
 
     val settings: SettingsRepository by lazy { SettingsRepository(context) }
+
+    val currentVehicle: CurrentVehicle by lazy { CurrentVehicle(repository, settings, appScope) }
 }

@@ -2,6 +2,291 @@
 <resources>
     <string name="app_name">Car Log</string>
 
+    <!-- Общее -->
+    <string name="action_save">Save</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_ok">OK</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_back">Back</string>
+    <string name="action_done">Done</string>
+    <string name="action_add">Add</string>
+    <string name="action_search">Search</string>
+    <string name="action_export">Export</string>
+    <string name="action_share">Share</string>
+    <string name="action_clear">Clear</string>
+    <string name="none">None</string>
+    <string name="add_new">Add new</string>
+    <string name="name">Name</string>
+    <string name="required">Required</string>
+    <string name="invalid_value">Invalid value</string>
+    <string name="delete_confirm_title">Delete?</string>
+    <string name="delete_entry_message">This record will be deleted permanently.</string>
+    <string name="optional_suffix">%1$s (optional)</string>
+
+    <!-- Главный экран -->
+    <string name="tab_history">History</string>
+    <string name="tab_reports">Reports</string>
+    <string name="tab_reminders">Reminders</string>
+    <string name="tab_more">More</string>
+    <string name="more_title">More options</string>
+    <string name="add_record">Add record</string>
+    <string name="select_vehicle">Select vehicle</string>
+    <string name="manage_vehicles">Manage vehicles</string>
+    <string name="no_vehicles">Add a vehicle to start logging</string>
+    <string name="add_vehicle">Add vehicle</string>
+
+    <!-- Типы записей -->
+    <string name="entry_refueling">Refueling</string>
+    <string name="entry_expense">Expense</string>
+    <string name="entry_income">Income</string>
+    <string name="entry_service">Service</string>
+    <string name="entry_route">Route</string>
+    <string name="entry_reading">Reading</string>
+    <string name="entry_reminder">Reminder</string>
+
+    <!-- Поля форм -->
+    <string name="field_vehicle">Vehicle</string>
+    <string name="field_date">Date</string>
+    <string name="field_time">Time</string>
+    <string name="field_odometer">Odometer</string>
+    <string name="field_last_odometer">Last odometer: %1$s</string>
+    <string name="field_fuel">Fuel</string>
+    <string name="field_price_per_unit">Price / %1$s</string>
+    <string name="field_total_cost">Total cost</string>
+    <string name="field_liters">Liters</string>
+    <string name="field_gallons">Gallons</string>
+    <string name="field_full_tank">Are you filling up the tank?</string>
+    <string name="field_missed_previous">Did you miss recording the previous refueling?</string>
+    <string name="field_missed_previous_hint">Fuel economy is not calculated up to this refueling</string>
+    <string name="field_gas_station">Gas station</string>
+    <string name="field_driver">Driver</string>
+    <string name="field_payment_method">Payment method</string>
+    <string name="field_reason">Reason</string>
+    <string name="field_notes">Notes</string>
+    <string name="field_title">Title</string>
+    <string name="field_expense_types">Type of expense</string>
+    <string name="field_service_types">Type of service</string>
+    <string name="field_income_type">Type of income</string>
+    <string name="field_discount">Discount</string>
+    <string name="field_place">Place</string>
+    <string name="field_value">Value</string>
+    <string name="field_total">Total</string>
+    <string name="field_origin">Origin</string>
+    <string name="field_destination">Destination</string>
+    <string name="field_start_date">Start date</string>
+    <string name="field_end_date">End date</string>
+    <string name="field_initial_odometer">Initial odometer</string>
+    <string name="field_final_odometer">Final odometer</string>
+    <string name="field_rate_per_distance">Value per %1$s (optional)</string>
+    <string name="field_freight_value">Freight value</string>
+    <string name="route_trip">Trip</string>
+    <string name="route_freight">Freight</string>
+    <string name="more_options">More options</string>
+    <string name="fewer_options">Fewer options</string>
+    <string name="error_below_previous">Must be at least %1$s</string>
+    <string name="error_above_next">Must be at most %1$s</string>
+    <string name="error_end_before_start">Must not be earlier than the start</string>
+    <string name="error_pick_type">Choose at least one type</string>
+    <string name="error_discount_too_big">Discount is bigger than the total</string>
+    <string name="error_positive">Must be greater than zero</string>
+
+    <!-- Машины -->
+    <string name="vehicles_title">Vehicles</string>
+    <string name="vehicle_new">New vehicle</string>
+    <string name="vehicle_edit">Edit vehicle</string>
+    <string name="vehicle_first_title">Add your vehicle</string>
+    <string name="vehicle_first_subtitle">Log refuelings, services and expenses, see real fuel economy and keep maintenance on schedule.</string>
+    <string name="vehicle_name">Name</string>
+    <string name="vehicle_name_required">Enter a name or a make</string>
+    <string name="vehicle_make">Make</string>
+    <string name="vehicle_model">Model</string>
+    <string name="vehicle_year">Year</string>
+    <string name="vehicle_plate">License plate</string>
+    <string name="vehicle_tank">Tank capacity</string>
+    <string name="vehicle_fuel">Fuel</string>
+    <string name="vehicle_active">Active</string>
+    <string name="vehicle_inactive">Inactive</string>
+    <string name="vehicle_current_odometer">Current odometer</string>
+    <string name="vehicle_currency">Currency</string>
+    <string name="vehicle_delete_message">%1$s and all of its records and reminders will be deleted permanently.</string>
+
+    <!-- История -->
+    <string name="history_reminders">Reminders</string>
+    <string name="history_empty">Add your first record</string>
+    <string name="history_empty_hint">Tap + to log a refueling, a service or an expense</string>
+    <string name="history_tank_range">Actual tank range: %1$s per full tank</string>
+    <string name="history_start_of_road">Start of the road</string>
+    <string name="history_next_refueling">Next refueling</string>
+
+    <!-- Сроки -->
+    <string name="due_in_distance">In %1$s</string>
+    <string name="due_distance_ago">%1$s ago</string>
+    <string name="due_now">Now</string>
+    <string name="due_today">today</string>
+    <plurals name="due_in_days">
+        <item quantity="one">in %d day</item>
+        <item quantity="other">in %d days</item>
+    </plurals>
+    <plurals name="due_days_ago">
+        <item quantity="one">%d day ago</item>
+        <item quantity="other">%d days ago</item>
+    </plurals>
+    <string name="duration_hours_minutes">%1$d h %2$d min</string>
+    <string name="duration_minutes">%1$d min</string>
+
+    <!-- Отчёты -->
+    <string name="report_general">General</string>
+    <plurals name="report_entries">
+        <item quantity="one">%1$d entry (%2$s - %3$s)</item>
+        <item quantity="other">%1$d entries (%2$s - %3$s)</item>
+    </plurals>
+    <string name="report_no_entries">No entries yet</string>
+    <string name="report_balance">Balance</string>
+    <string name="report_cost">Cost</string>
+    <string name="report_income">Income</string>
+    <string name="report_distance">Distance</string>
+    <string name="report_total">Total</string>
+    <string name="report_by_day">By day</string>
+    <string name="report_by_distance">By %1$s</string>
+    <string name="report_daily_average">Daily average</string>
+    <string name="report_volume">Volume</string>
+    <string name="report_per_refueling">Per refueling</string>
+    <string name="report_average_price">Average price</string>
+    <string name="report_price_per_unit">Price / %1$s</string>
+    <string name="report_lowest">Lowest</string>
+    <string name="report_highest">Highest</string>
+    <string name="report_fuel_efficiency">Fuel efficiency</string>
+    <string name="report_general_average">General average</string>
+    <string name="report_best">Best</string>
+    <string name="report_worst">Worst</string>
+    <string name="report_refueling_routine">Refueling routine</string>
+    <string name="report_between_refuelings">Between refuelings</string>
+    <string name="report_frequency">Frequency</string>
+    <string name="report_estimated_range">Estimated range</string>
+    <string name="report_monthly_projection">Monthly projection</string>
+    <string name="report_days_value">%1$s days</string>
+    <string name="report_full_tanks">%1$d of %2$d refuelings with a full tank (%3$s%%) — the average is measured from one full tank to the next.</string>
+    <string name="report_tank_hint">Set the tank capacity in the vehicle to see the range</string>
+    <string name="report_general_chart">Expenses and income chart</string>
+    <string name="report_monthly_chart">Monthly expenses chart</string>
+    <string name="report_monthly_income_chart">Monthly income chart</string>
+    <string name="report_efficiency_chart">Fuel efficiency chart</string>
+    <string name="report_price_chart">Fuel price chart</string>
+    <string name="report_services_chart">Services chart</string>
+    <string name="report_expenses_chart">Expenses chart</string>
+    <string name="report_incomes_chart">Incomes chart</string>
+    <string name="report_cost_split">Cost split</string>
+    <string name="report_value">Value</string>
+    <string name="report_time">Time</string>
+    <string name="report_per_route">Per route</string>
+    <string name="report_days_between">Days between</string>
+    <string name="report_no_type">No type</string>
+    <string name="report_not_enough_data">Not enough data yet</string>
+    <string name="period_title">Period</string>
+    <string name="period_all_time">All time</string>
+    <string name="period_this_month">This month</string>
+    <string name="period_last_month">Last month</string>
+    <string name="period_last_3_months">Last 3 months</string>
+    <string name="period_last_6_months">Last 6 months</string>
+    <string name="period_this_year">This year</string>
+    <string name="period_last_12_months">Last 12 months</string>
+    <string name="period_custom">Custom range…</string>
+
+    <!-- Напоминания -->
+    <string name="reminders_empty">Add your first reminder</string>
+    <string name="reminder_new">New reminder</string>
+    <string name="reminder_edit">Reminder</string>
+    <string name="reminder_type">Type</string>
+    <string name="reminder_due_odometer">At odometer</string>
+    <string name="reminder_due_date">On date</string>
+    <string name="reminder_repeat">Repeat</string>
+    <string name="reminder_repeat_distance">Every (%1$s)</string>
+    <string name="reminder_repeat_months">Every (months)</string>
+    <string name="reminder_repeat_hint">A repeating reminder moves forward when you log this service or expense.</string>
+    <string name="reminder_need_due">Set an odometer or a date</string>
+    <string name="reminder_need_type">Choose a type</string>
+    <string name="reminder_mark_done">Mark as done</string>
+    <string name="reminder_done_message">The reminder will move to its next date, or close if it doesn\'t repeat.</string>
+    <string name="notification_channel_reminders">Reminders</string>
+    <string name="notification_reminder_title">%1$s · %2$s</string>
+
+    <!-- Ещё -->
+    <string name="more_vehicles">Vehicles</string>
+    <string name="more_drivers">Drivers</string>
+    <string name="more_fuels">Fuels</string>
+    <string name="more_places">My places</string>
+    <string name="more_service_types">Types of service</string>
+    <string name="more_expense_types">Types of expense</string>
+    <string name="more_income_types">Types of income</string>
+    <string name="more_reasons">Reasons</string>
+    <string name="more_payment_methods">Payment methods</string>
+    <string name="more_flex">Flex calculator</string>
+    <string name="more_settings">Settings</string>
+    <string name="more_about">About</string>
+    <string name="about_text">Car Log %1$s — a personal vehicle logbook. Unofficial project, not affiliated with Drivvo. All data stays on this phone.</string>
+
+    <!-- Справочники -->
+    <string name="catalog_rename">Rename</string>
+    <string name="catalog_in_use">Can\'t delete: it\'s used in records or reminders</string>
+    <string name="catalog_empty">Nothing here yet</string>
+    <string name="fuel_category">Category</string>
+    <string name="fuel_category_gasoline">Gasoline</string>
+    <string name="fuel_category_diesel">Diesel</string>
+    <string name="fuel_category_ethanol">Ethanol</string>
+    <string name="fuel_category_lpg">LPG</string>
+    <string name="fuel_category_cng">CNG</string>
+    <string name="fuel_category_electricity">Electricity</string>
+    <string name="fuel_category_other">Other</string>
+    <string name="place_kind_gas_station">Gas station</string>
+    <string name="place_kind_other">Place</string>
+    <string name="place_address">Address</string>
+    <string name="place_open_map">Open in maps</string>
+    <string name="place_new">New place</string>
+
+    <!-- Настройки -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_currency">Currency</string>
+    <string name="settings_distance_unit">Distance unit</string>
+    <string name="settings_volume_unit">Volume unit</string>
+    <string name="settings_consumption">Fuel efficiency format</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_units_hint">Units only change labels: values already logged are not converted.</string>
+    <string name="unit_kilometers">Kilometers (km)</string>
+    <string name="unit_miles">Miles (mi)</string>
+    <string name="unit_liters">Liters (L)</string>
+    <string name="unit_us_gallons">US gallons (gal)</string>
+    <string name="unit_imperial_gallons">Imperial gallons (gal)</string>
+    <string name="theme_system">System</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_light">Light</string>
+    <string name="settings_data">Data</string>
+    <string name="settings_export_csv">Export records to CSV</string>
+    <string name="settings_backup_export">Export backup</string>
+    <string name="settings_backup_import">Restore from backup</string>
+    <string name="settings_backup_import_message">All current vehicles, records and reminders will be replaced with the backup.</string>
+    <string name="settings_backup_exported">Backup saved</string>
+    <string name="settings_backup_imported">Backup restored</string>
+    <string name="settings_backup_failed">Couldn\'t read the backup</string>
+    <string name="settings_csv_exported">Records exported</string>
+    <string name="settings_export_failed">Couldn\'t save the file</string>
+
+    <!-- Flex -->
+    <string name="flex_title">Flex calculator</string>
+    <string name="flex_hint">Which fuel is cheaper per distance. Without consumption figures the usual rule applies: ethanol pays off below 70%% of the gasoline price.</string>
+    <string name="flex_first_price">Gasoline price</string>
+    <string name="flex_second_price">Ethanol price</string>
+    <string name="flex_first_consumption">Gasoline efficiency (%1$s)</string>
+    <string name="flex_second_consumption">Ethanol efficiency (%1$s)</string>
+    <string name="flex_ratio">Price ratio: %1$s%%</string>
+    <string name="flex_first_wins">Gasoline is cheaper</string>
+    <string name="flex_second_wins">Ethanol is cheaper</string>
+    <string name="flex_equal">Both cost the same</string>
+    <string name="flex_cost_per_distance">%1$s per %2$s</string>
+
+    <!-- Поиск -->
+    <string name="search_hint">Search records</string>
+    <string name="search_empty">Nothing found</string>
+
     <!-- Стартовые справочники новой базы. Порядок топлива совпадает с DefaultCatalogs.FUEL_CATEGORIES. -->
     <string-array name="seed_fuels">
         <item>Gasoline</item>
