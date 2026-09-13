@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Car Log</string>
+
+    <!-- Стартовые справочники новой базы. Порядок топлива совпадает с DefaultCatalogs.FUEL_CATEGORIES. -->
+    <string-array name="seed_fuels">
+        <item>Gasoline</item>
+        <item>Premium gasoline</item>
+        <item>Diesel</item>
+        <item>Premium diesel</item>
+        <item>Ethanol</item>
+        <item>LPG</item>
+        <item>CNG</item>
+        <item>Electricity</item>
+    </string-array>
+    <string-array name="seed_service_types">
+        <item>Air conditioning</item>
+        <item>Air filter</item>
+        <item>Alignment</item>
+        <item>Battery</item>
+        <item>Brake fluid</item>
+        <item>Brake pads</item>
+        <item>Cabin filter</item>
+        <item>Car wash</item>
+        <item>Clutch</item>
+        <item>Coolant</item>
+        <item>Engine oil</item>
+        <item>Fuel filter</item>
+        <item>Inspection</item>
+        <item>Lights</item>
+        <item>Oil filter</item>
+        <item>Spark plugs</item>
+        <item>Suspension</item>
+        <item>Timing belt</item>
+        <item>Tire change</item>
+        <item>Tire rotation</item>
+        <item>Transmission oil</item>
+        <item>Wheel balancing</item>
+        <item>Windshield wipers</item>
+    </string-array>
+    <string-array name="seed_expense_types">
+        <item>Accessories</item>
+        <item>Financing</item>
+        <item>Fine</item>
+        <item>Insurance</item>
+        <item>Parking</item>
+        <item>Registration</item>
+        <item>Tax</item>
+        <item>Toll</item>
+    </string-array>
+    <string-array name="seed_income_types">
+        <item>Freight</item>
+        <item>Reimbursement</item>
+        <item>Ride sharing</item>
+        <item>Sale</item>
+    </string-array>
+    <string-array name="seed_reasons">
+        <item>Personal</item>
+        <item>Work</item>
+        <item>Travel</item>
+    </string-array>
+    <string-array name="seed_payment_methods">
+        <item>Cash</item>
+        <item>Credit card</item>
+        <item>Debit card</item>
+        <item>Fuel card</item>
+    </string-array>
+</resources>
