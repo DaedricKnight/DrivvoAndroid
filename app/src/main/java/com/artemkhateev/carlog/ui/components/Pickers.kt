@@ -3,10 +3,12 @@ package com.artemkhateev.carlog.ui.components
 import android.text.format.DateFormat
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
@@ -184,15 +186,20 @@ internal fun SheetTitle(title: String, modifier: Modifier = Modifier) {
     )
 }
 
+/** Строка шторки; [leading] — значок перед названием, например логотип марки. */
 @Composable
-internal fun OptionRow(label: String, selected: Boolean, onClick: () -> Unit) {
+internal fun OptionRow(label: String, selected: Boolean, leading: (@Composable () -> Unit)? = null, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(horizontal = 24.dp, vertical = 14.dp),
+            .padding(horizontal = 24.dp, vertical = if (leading != null) 8.dp else 14.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        if (leading != null) {
+            leading()
+            Spacer(Modifier.width(16.dp))
+        }
         Text(
             text = label,
             style = CarLogTheme.typography.body,

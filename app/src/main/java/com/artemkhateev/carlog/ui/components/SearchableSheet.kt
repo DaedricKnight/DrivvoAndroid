@@ -49,6 +49,8 @@ fun SearchableSheet(
     onSelect: (String) -> Unit,
     onDismiss: () -> Unit,
     emptyHint: String? = null,
+    /** Значок перед вариантом: логотип марки. */
+    leading: (@Composable (String) -> Unit)? = null,
 ) {
     val colors = CarLogTheme.colors
     var query by rememberSaveable { mutableStateOf("") }
@@ -94,7 +96,7 @@ fun SearchableSheet(
                 }
             }
             items(filtered) { option ->
-                OptionRow(option, option == selected) { choose(option) }
+                OptionRow(option, option == selected, leading = leading?.let { draw -> @Composable { draw(option) } }) { choose(option) }
             }
         }
     }

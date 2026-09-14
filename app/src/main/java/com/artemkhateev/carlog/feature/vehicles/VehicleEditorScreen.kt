@@ -51,6 +51,7 @@ import com.artemkhateev.carlog.ui.components.FormPickerField
 import com.artemkhateev.carlog.ui.components.FormRow
 import com.artemkhateev.carlog.ui.components.FormSwitchRow
 import com.artemkhateev.carlog.ui.components.FormTextField
+import com.artemkhateev.carlog.ui.components.MakeBadge
 import com.artemkhateev.carlog.ui.components.OptionSheet
 import com.artemkhateev.carlog.ui.components.SearchableSheet
 import com.artemkhateev.carlog.ui.format.sanitizeDecimalInput
@@ -118,7 +119,7 @@ fun VehicleEditorScreen(route: VehicleEditorRoute, navigator: AppNavigator) {
                 error = if (showErrors && draft.displayName.isEmpty()) stringResource(R.string.vehicle_name_required) else null,
             )
         }
-        FormRow(null) {
+        FormRow(null, leading = draft.make.takeIf { it.isNotBlank() }?.let { make -> @Composable { MakeBadge(make) } }) {
             FormPickerField(
                 label = stringResource(R.string.vehicle_make),
                 value = draft.make,
@@ -240,6 +241,7 @@ fun VehicleEditorScreen(route: VehicleEditorRoute, navigator: AppNavigator) {
             selected = draft.make,
             onSelect = { make -> viewModel.update { it.withMake(make) } },
             onDismiss = { makeSheetOpen = false },
+            leading = { name -> MakeBadge(name) },
         )
     }
     if (modelSheetOpen) {

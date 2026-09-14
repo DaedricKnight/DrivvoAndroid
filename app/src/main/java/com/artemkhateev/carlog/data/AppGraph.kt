@@ -5,6 +5,7 @@ import android.content.Context
 import com.artemkhateev.carlog.data.backup.DataTransfer
 import com.artemkhateev.carlog.data.db.CarLogDatabase
 import com.artemkhateev.carlog.data.makes.CarMakesCatalog
+import com.artemkhateev.carlog.data.makes.MakeLogosCatalog
 import com.artemkhateev.carlog.data.reminders.ReminderScheduler
 import com.artemkhateev.carlog.data.settings.SettingsRepository
 import kotlinx.coroutines.CoroutineScope
@@ -38,4 +39,6 @@ object AppGraph {
     val dataTransfer: DataTransfer by lazy { DataTransfer(database.backupDao(), repository, context.contentResolver) }
 
     val carMakes: CarMakesCatalog by lazy { CarMakesCatalog { context.assets.open("car_makes.json") } }
+
+    val makeLogos: MakeLogosCatalog by lazy { MakeLogosCatalog { context.assets.open("make_logos.json") } }
 }

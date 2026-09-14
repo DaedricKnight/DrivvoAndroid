@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.artemkhateev.carlog.R
+import com.artemkhateev.carlog.data.makes.forVehicle
 import com.artemkhateev.carlog.data.model.Vehicle
 import com.artemkhateev.carlog.ui.theme.CarLogTheme
 import com.artemkhateev.carlog.ui.theme.VehicleColors
@@ -142,9 +143,14 @@ fun VehicleChip(vehicle: Vehicle, odometer: Long?, onClick: () -> Unit, modifier
     }
 }
 
-/** Аватар машины: первая буква марки на её цвете в белой обводке — как значок марки у референса. */
+/** Аватар машины: логотип марки в белом круге, как у референса; у марки без логотипа — буква на цвете машины. */
 @Composable
 fun VehicleAvatar(vehicle: Vehicle, modifier: Modifier = Modifier, size: Dp = 36.dp) {
+    val logo = LocalMakeLogos.current.forVehicle(vehicle.make, vehicle.name)
+    if (logo != null) {
+        MakeLogoBadge(logo, modifier, size)
+        return
+    }
     val color = VehicleColors[vehicle.colorIndex.mod(VehicleColors.size)]
     val letter = vehicle.make.ifBlank { vehicle.name }.trim().firstOrNull()?.uppercaseChar()?.toString() ?: "?"
     Box(

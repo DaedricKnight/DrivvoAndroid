@@ -1,0 +1,11 @@
+# Логотипы брендов: P154 — логотип, P8972 — маленький логотип или значок, P2910 — значок.
+# Список брендов подставляет fetch_logos.sh вместо слова в фигурных скобках.
+SELECT ?item ?prop ?file ?rank ?start ?end WHERE {
+  VALUES ?item { ITEMS }
+  VALUES (?p ?ps ?prop) { (p:P154 ps:P154 "logo") (p:P8972 ps:P8972 "small") (p:P2910 ps:P2910 "icon") }
+  ?item ?p ?statement.
+  ?statement ?ps ?file; wikibase:rank ?rank.
+  FILTER(?rank != wikibase:DeprecatedRank)
+  OPTIONAL { ?statement pq:P580 ?start }
+  OPTIONAL { ?statement pq:P582 ?end }
+}

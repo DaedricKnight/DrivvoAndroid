@@ -61,8 +61,9 @@ room {
 }
 
 tasks.withType<Test>().configureEach {
-    // CarMakesFileTest читает список марок из assets: без этого после пересборки списка Gradle тест не перезапустит.
+    // Тесты читают список марок и логотипы из assets: без этого после пересборки файлов Gradle их не перезапустит.
     inputs.file("src/main/assets/car_makes.json")
+    inputs.file("src/main/assets/make_logos.json")
 }
 
 dependencies {

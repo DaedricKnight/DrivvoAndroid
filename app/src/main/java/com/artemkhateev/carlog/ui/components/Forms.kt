@@ -88,9 +88,14 @@ fun EditorScaffold(
     }
 }
 
-/** Строка формы: значок слева в своей колонке, поле справа. */
+/** Строка формы: значок слева в своей колонке, поле справа. [leading] рисуется вместо значка — логотип марки. */
 @Composable
-fun FormRow(icon: ImageVector?, modifier: Modifier = Modifier, content: @Composable RowScope.() -> Unit) {
+fun FormRow(
+    icon: ImageVector?,
+    modifier: Modifier = Modifier,
+    leading: (@Composable () -> Unit)? = null,
+    content: @Composable RowScope.() -> Unit,
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -98,7 +103,10 @@ fun FormRow(icon: ImageVector?, modifier: Modifier = Modifier, content: @Composa
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(Modifier.width(64.dp), contentAlignment = Alignment.Center) {
-            if (icon != null) Icon(icon, contentDescription = null, tint = CarLogTheme.colors.icon)
+            when {
+                leading != null -> leading()
+                icon != null -> Icon(icon, contentDescription = null, tint = CarLogTheme.colors.icon)
+            }
         }
         content()
     }

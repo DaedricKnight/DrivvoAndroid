@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -21,6 +22,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.artemkhateev.carlog.data.AppGraph
 import com.artemkhateev.carlog.data.CurrentVehicle
+import com.artemkhateev.carlog.data.makes.MakeLogo
+import com.artemkhateev.carlog.data.makes.MakeLogosCatalog
 import com.artemkhateev.carlog.data.settings.AppSettings
 import com.artemkhateev.carlog.data.settings.SettingsRepository
 import com.artemkhateev.carlog.data.settings.ThemeMode
@@ -35,6 +38,7 @@ import com.artemkhateev.carlog.feature.search.SearchScreen
 import com.artemkhateev.carlog.feature.settings.SettingsScreen
 import com.artemkhateev.carlog.feature.vehicles.VehicleEditorScreen
 import com.artemkhateev.carlog.feature.vehicles.VehiclesScreen
+import com.artemkhateev.carlog.ui.components.LocalMakeLogos
 import com.artemkhateev.carlog.ui.format.Formats
 import com.artemkhateev.carlog.ui.navigation.AppNavigator
 import com.artemkhateev.carlog.ui.navigation.CatalogRoute
@@ -51,23 +55,31 @@ import com.artemkhateev.carlog.ui.navigation.VehiclesRoute
 import com.artemkhateev.carlog.ui.theme.CarLogTheme
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 
-data class AppUiState(val settings: AppSettings, val hasVehicles: Boolean)
+data class AppUiState(val settings: AppSettings, val hasVehicles: Boolean, val makeLogos: Map<String, MakeLogo>)
 
-class AppViewModel(currentVehicle: CurrentVehicle, settings: SettingsRepository) : ViewModel() {
-    /** null — настройки и список машин ещё не прочитаны: до этого показываем только фон окна. */
+class AppViewModel(currentVehicle: CurrentVehicle, settings: SettingsRepository, makeLogos: MakeLogosCatalog) : ViewModel() {
+    // Без файла логотипов приложение работает: у машин остаются буквы.
+    private val logos = flow { emit(makeLogos.logos()) }.catch { emit(emptyMap()) }
+
+    /**
+     * null — настройки, список машин и логотипы ещё не прочитаны: до этого показываем только фон окна.
+     * Логотипы ждём со всем остальным, иначе на первом кадре у машины мелькнула бы буква.
+     */
     val state: StateFlow<AppUiState?> =
-        combine(settings.settings, currentVehicle.selection.filterNotNull()) { current, selection ->
-            AppUiState(current, selection.vehicles.isNotEmpty())
+        combine(settings.settings, currentVehicle.selection.filterNotNull(), logos) { current, selection, loadedLogos ->
+            AppUiState(current, selection.vehicles.isNotEmpty(), loadedLogos)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 }
 
 @Composable
 fun CarLogApp() {
-    val viewModel: AppViewModel = viewModel { AppViewModel(AppGraph.currentVehicle, AppGraph.settings) }
+    val viewModel: AppViewModel = viewModel { AppViewModel(AppGraph.currentVehicle, AppGraph.settings, AppGraph.makeLogos) }
     val state = viewModel.state.collectAsStateWithLifecycle().value ?: return
     val dark = when (state.settings.themeMode) {
         ThemeMode.System -> isSystemInDarkTheme()
@@ -83,28 +95,30 @@ fun CarLogApp() {
         }
     }
     CarLogTheme(dark = dark, formats = formats) {
-        val navController = rememberNavController()
-        val navigator = remember(navController) { AppNavigator(navController) }
-        // Первый экран выбирается один раз: дальше переходами управляет навигация.
-        val startWithVehicles = rememberSaveable { state.hasVehicles }
-        NavHost(
-            navController = navController,
-            startDestination = if (startWithVehicles) MainRoute else VehicleEditorRoute(first = true),
-            modifier = Modifier
-                .fillMaxSize()
-                .background(CarLogTheme.colors.background),
-        ) {
-            composable<MainRoute> { MainScreen(navigator) }
-            composable<VehicleEditorRoute> { VehicleEditorScreen(it.toRoute(), navigator) }
-            composable<VehiclesRoute> { VehiclesScreen(navigator) }
-            composable<EntryEditorRoute> { EntryEditorScreen(it.toRoute(), navigator) }
-            composable<ReminderEditorRoute> { ReminderEditorScreen(it.toRoute(), navigator) }
-            composable<CatalogRoute> { CatalogScreen(it.toRoute(), navigator) }
-            composable<FuelsRoute> { FuelsScreen(navigator) }
-            composable<PlacesRoute> { PlacesScreen(navigator) }
-            composable<SettingsRoute> { SettingsScreen(navigator) }
-            composable<FlexCalculatorRoute> { FlexCalculatorScreen(navigator) }
-            composable<SearchRoute> { SearchScreen(navigator) }
+        CompositionLocalProvider(LocalMakeLogos provides state.makeLogos) {
+            val navController = rememberNavController()
+            val navigator = remember(navController) { AppNavigator(navController) }
+            // Первый экран выбирается один раз: дальше переходами управляет навигация.
+            val startWithVehicles = rememberSaveable { state.hasVehicles }
+            NavHost(
+                navController = navController,
+                startDestination = if (startWithVehicles) MainRoute else VehicleEditorRoute(first = true),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(CarLogTheme.colors.background),
+            ) {
+                composable<MainRoute> { MainScreen(navigator) }
+                composable<VehicleEditorRoute> { VehicleEditorScreen(it.toRoute(), navigator) }
+                composable<VehiclesRoute> { VehiclesScreen(navigator) }
+                composable<EntryEditorRoute> { EntryEditorScreen(it.toRoute(), navigator) }
+                composable<ReminderEditorRoute> { ReminderEditorScreen(it.toRoute(), navigator) }
+                composable<CatalogRoute> { CatalogScreen(it.toRoute(), navigator) }
+                composable<FuelsRoute> { FuelsScreen(navigator) }
+                composable<PlacesRoute> { PlacesScreen(navigator) }
+                composable<SettingsRoute> { SettingsScreen(navigator) }
+                composable<FlexCalculatorRoute> { FlexCalculatorScreen(navigator) }
+                composable<SearchRoute> { SearchScreen(navigator) }
+            }
         }
     }
 }
