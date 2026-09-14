@@ -121,25 +121,42 @@ CHOSEN_FILES = {
     # Фото значков и вывесок с Commons не из Wikidata: обрезка в CROPS.
     "Arcfox": "ARCFOX αS front face.jpg",
     "Armstrong Siddeley": "1936 Armstrong-Siddeley Atalanta bonnet mascot 49108522413 (cropped).jpg",  # сфинкс с капота
+    "Baojun": "Baojun 510 facelift 001.jpg",  # щит с головой коня — эмблема марки до 2019 года
     "Bizzarrini": "Emblem Bizzarrini Schriftzug.JPG",
     "Borgward": "Borgward Logo auf der IAA 2017.jpg",
+    "Denza": "Denza Makati.jpg",  # вывеска салона
+    "EVO": "EVO Cross 4.jpg",
     "Facel Vega": "1963 Facel Vega Facellia 3.jpg",
+    "FAW": "2016 FAW Senya R7 (front).jpg",
+    "GAC": "2021 GAC Trumpchi Empow (front).jpg",
+    "Glickenhaus": "Glickenhaus 007 LMH bodywork in front of the pit garage at the 2022 Le Mans (54279838950).jpg",  # герб SCG у боксов
+    "Hafei": "Hafei Lobo HF J71000 2009 (12423256934).jpg",
+    "Haima": "南京卡子门大街海马汽车 - panoramio.jpg",  # эмблема с вывески дилера
     "Hispano-Suiza": "Hispano suiza logo.jpg",
     "Iran Khodro": "IKCO Nishapur Dealership (4).JPG",  # конь с вывески дилера
     "IZh": "ИЖ логотип.jpg",
     "Jensen": "Jensen Logo (46959002074).jpg",
+    "JMEV": "2018 Jiangling (JMEV) E100 low-speed electric vehicle, front 8.11.18.jpg",
     "Kaiser": "KAISER DARRIN Convertible logo.jpg",
+    "Karry": "Karry Dolphin 20231108.jpg",
     "Landwind": "Zotye T800 004.jpg",  # вывеска Landwind на соседнем стенде автосалона
+    "Liebao": "2018 Changfeng-Liebao (Leopaard) CT7, front 8.16.18.jpg",
     "Mega": "Emblem Mega.JPG",
+    "Nevo": "Qiyuan A07 001.jpg",  # Changan Qiyuan, за границей — Nevo
     "Pagani": "Geneva MotorShow 2013 - Pagani Huayra Pagani sign.jpg",
     "Proton": "Proton showroom in SS15, Subang Jaya.jpg",  # вывеска салона
     "Roewe": "2022 SAIC Roewe RX5 eMAX (front).jpg",
     "Saleen": "Saleen Mustang at the 2014 New York International Auto Show (13938795056).jpg",  # надпись над стендом
+    "Shuanghuan": "2011 Shuanghuan SCEO (front).jpg",
+    "Sol": "Sehol QX 007.jpg",  # с 2020 года марка называется Sehol
     "Vector": "Vector W8 car badge.jpg",
+    "Venucia": "2017 Dongfeng-Nissan Venucia D60 (front).jpg",
     "Venturi": "Emblem Venturi.JPG",
     "Voisin": "1924 Avions Voisin C4 logo, four cylinder without valve 8CV Coach body, 4 seats, at the Musée Automobile de Vendée.JPG",
     "Volga": "Volga M21 badge sign.JPG",  # олень с капота ГАЗ-21 — символ марки
     "Voyah": "Voyah Dream Logo, Auto 2024, Zurich (PANA0847-2).jpg",
+    "Zenvo": "Zenvo, Præstø, 2026 (2).jpg",  # надпись на здании завода
+    "Zotye": "SZ 深圳 Shenzhen 龍華區 Longhua 布龍路 Bulong Road Dec-2017 IX1 眾泰汽車 Zotye automobile vehicles.jpg",  # эмблема с фасада дилера
     # Под CC BY и CC BY-SA: вырезки из фото значков и перерисованные простые логотипы. Файлы, где логотип взят с сайта
     # компании и помечен CC BY без разрешения (Borgward, Hennessey, Zenvo, Baojun, Arcfox), не брать.
     "Abarth": "Abarth Logo.png",
@@ -165,12 +182,19 @@ AUTHORS = {
 # Фото не с Wikimedia (Flickr, найдены через Openverse): адрес картинки, страница, лицензия и автор записаны здесь,
 # выгружать о них нечего. В приложении строка автора ведёт на страницу фото.
 EXTERNAL_FILES = {
+    "LDV": {"url": "https://live.staticflickr.com/65535/49562582722_a62186252c_4k.jpg",
+            "page": "https://www.flickr.com/photos/65344061@N06/49562582722", "license": "CC BY 2.0", "author": "Andrew Bone"},
     "Marussia": {"url": "https://live.staticflickr.com/8304/7787903070_9379c50e43_b.jpg",
                  "page": "https://www.flickr.com/photos/22974618@N00/7787903070", "license": "CC BY-SA 2.0", "author": "Sergey Galyonkin"},
+    "Panoz": {"url": "https://live.staticflickr.com/1923/43510284140_829026770f_o.jpg",
+              "page": "https://www.flickr.com/photos/45536738@N03/43510284140", "license": "CC BY 2.0", "author": "Osajus Photography"},
     "Panther": {"url": "https://live.staticflickr.com/3389/3671285281_94d4d78409_b.jpg",
                 "page": "https://www.flickr.com/photos/32659528@N00/3671285281", "license": "CC BY 2.0", "author": "Brian Snelson"},
     "UAZ": {"url": "https://live.staticflickr.com/1677/25085065193_55dcf39dd7_b.jpg",
             "page": "https://www.flickr.com/photos/133136615@N03/25085065193", "license": "CC0 1.0", "author": "nicifor28"},
+    # Оригинал этого фото лежит на Flickr боком (поворот задан только для уменьшенных копий), поэтому копия 1024 px.
+    "Westfield": {"url": "https://live.staticflickr.com/47/153767419_8841702cdd_b.jpg",
+                  "page": "https://www.flickr.com/photos/32659528@N00/153767419", "license": "CC BY 2.0", "author": "Brian Snelson"},
 }
 # Обрезка фото значка: доли картинки — слева, сверху, ширина, высота.
 CROPS = {
@@ -179,47 +203,69 @@ CROPS = {
     "Apollo": (0.27, 0.17, 0.46, 0.62),
     "Arcfox": (0.483, 0.402, 0.072, 0.095),
     "Armstrong Siddeley": (0.27, 0.32, 0.48, 0.42),
+    "Baojun": (0.289, 0.518, 0.057, 0.093),
     "Berkeley": (0.21, 0.09, 0.66, 0.85),
     "Bestune": (0.07, 0.23, 0.22, 0.52),
     "Bizzarrini": (0.01, 0.06, 0.98, 0.88),
     "Borgward": (0.06, 0.04, 0.89, 0.92),
     "Cord": (0.17, 0.05, 0.71, 0.84),
+    "Denza": (0.2538, 0.1887, 0.0649, 0.098),
     "Eagle": (0.13, 0.08, 0.66, 0.84),
+    "EVO": (0.754, 0.483, 0.103, 0.042),
     "Excalibur": (0.02, 0.03, 0.96, 0.94),
     "Facel Vega": (0.03, 0.27, 0.89, 0.57),
+    "FAW": (0.1399, 0.4964, 0.0686, 0.1029),
     "Fisker": (0.40, 0.21, 0.20, 0.27),
+    "GAC": (0.1321, 0.5577, 0.0597, 0.1054),
     "Ginetta": (0.26, 0.21, 0.455, 0.58),
     "Glas": (0.06, 0.10, 0.90, 0.86),
+    "Glickenhaus": (0.9605, 0.251, 0.0155, 0.042),
+    "Hafei": (0.679, 0.598, 0.042, 0.068),
+    "Haima": (0.471, 0.489, 0.085, 0.064),
     "Hispano-Suiza": (0.04, 0.08, 0.92, 0.85),
     "Hotchkiss": (0.06, 0.16, 0.88, 0.80),
     "Iran Khodro": (0.38, 0.06, 0.27, 0.32),
     "IZh": (0.30, 0.17, 0.38, 0.67),
     "Jensen": (0.03, 0.38, 0.91, 0.29),
+    "JMEV": (0.807, 0.568, 0.030, 0.054),
     "Kaiser": (0.31, 0.23, 0.41, 0.49),
+    "Karry": (0.162, 0.552, 0.054, 0.048),
     "Lagonda": (0.10, 0.34, 0.62, 0.48),
     "Landwind": (0.598, 0.132, 0.132, 0.062),
+    "LDV": (0.245, 0.606, 0.059, 0.042),
+    "Liebao": (0.717, 0.452, 0.0535, 0.0555),
     "Marussia": (0.46, 0.715, 0.38, 0.115),
     "Mega": (0.205, 0.14, 0.555, 0.705),
     "Morgan": (0.06, 0.33, 0.88, 0.35),
     "Morris": (0.18, 0.29, 0.57, 0.57),
+    "Nevo": (0.2455, 0.582, 0.043, 0.024),
     "Pagani": (0.30, 0.41, 0.46, 0.19),
+    "Panoz": (0.243, 0.492, 0.153, 0.286),
     "Panther": (0.36, 0.14, 0.35, 0.115),
     "Proton": (0.175, 0.27, 0.28, 0.105),
     "Reliant": (0.24, 0.18, 0.54, 0.66),
     "Roewe": (0.160, 0.502, 0.048, 0.104),
     "Saleen": (0.33, 0.02, 0.50, 0.10),
+    "Shuanghuan": (0.146, 0.459, 0.051, 0.071),
+    "Sol": (0.785, 0.465, 0.0435, 0.0285),
     "Standard": (0.27, 0.16, 0.46, 0.62),
     "Vector": (0.05, 0.40, 0.89, 0.21),
+    "Venucia": (0.140, 0.535, 0.031, 0.073),
     "Venturi": (0.06, 0.18, 0.83, 0.46),
     "Voisin": (0.11, 0.24, 0.79, 0.46),
     "Volga": (0.35, 0.18, 0.49, 0.44),
     "Voyah": (0.39, 0.21, 0.24, 0.37),
+    "Westfield": (0.390, 0.752, 0.257, 0.062),
+    "Zenvo": (0.161, 0.563, 0.129, 0.063),
+    "Zotye": (0.186, 0.394, 0.118, 0.078),
 }
 # Круглые значки на фото: картинка заливает весь круг аватара, а не вписывается в белый.
-FILL = {"Alfa Romeo", "Alpina", "Apollo", "Berkeley", "Excalibur", "Fisker", "Ginetta", "Hotchkiss", "IZh", "Mega", "Standard"}
+FILL = {"Alfa Romeo", "Alpina", "Apollo", "Berkeley", "Denza", "Excalibur", "FAW", "Fisker", "GAC", "Ginetta", "Hotchkiss", "IZh", "Mega", "Standard"}
 # Марка без своего логотипа, машины которой носят значок другой марки из списка.
 SAME_LOGO = {
+    "Aeolus": "Dongfeng",  # легковые Fengshen (Aeolus) носят на решётке эмблему Dongfeng
     "Dongfeng Liuzhou": "Dongfeng",  # Forthing и Chenglong из Люйчжоу выходят с эмблемой Dongfeng
+    "FAW Jilin": "FAW",  # Senia, Junpai и Jiabao носят эмблему FAW
 }
 
 SLUG_REPLACEMENTS = {"+": "plus", ".": "dot", "&": "and", "đ": "d", "ħ": "h", "ı": "i", "ĸ": "k", "ŀ": "l", "ł": "l",
