@@ -118,6 +118,27 @@ CHOSEN_FILES = {
     "WiLL": "WiLL-Markenlogo.jpg",
     "Wolseley": "Wolseley sign.jpg",
     "Zastava": "Zastava Automobiles logo.jpg",
+    # Фото значков и вывесок с Commons не из Wikidata: обрезка в CROPS.
+    "Arcfox": "ARCFOX αS front face.jpg",
+    "Armstrong Siddeley": "1936 Armstrong-Siddeley Atalanta bonnet mascot 49108522413 (cropped).jpg",  # сфинкс с капота
+    "Bizzarrini": "Emblem Bizzarrini Schriftzug.JPG",
+    "Borgward": "Borgward Logo auf der IAA 2017.jpg",
+    "Facel Vega": "1963 Facel Vega Facellia 3.jpg",
+    "Hispano-Suiza": "Hispano suiza logo.jpg",
+    "Iran Khodro": "IKCO Nishapur Dealership (4).JPG",  # конь с вывески дилера
+    "IZh": "ИЖ логотип.jpg",
+    "Jensen": "Jensen Logo (46959002074).jpg",
+    "Kaiser": "KAISER DARRIN Convertible logo.jpg",
+    "Landwind": "Zotye T800 004.jpg",  # вывеска Landwind на соседнем стенде автосалона
+    "Mega": "Emblem Mega.JPG",
+    "Pagani": "Geneva MotorShow 2013 - Pagani Huayra Pagani sign.jpg",
+    "Proton": "Proton showroom in SS15, Subang Jaya.jpg",  # вывеска салона
+    "Roewe": "2022 SAIC Roewe RX5 eMAX (front).jpg",
+    "Saleen": "Saleen Mustang at the 2014 New York International Auto Show (13938795056).jpg",  # надпись над стендом
+    "Venturi": "Emblem Venturi.JPG",
+    "Voisin": "1924 Avions Voisin C4 logo, four cylinder without valve 8CV Coach body, 4 seats, at the Musée Automobile de Vendée.JPG",
+    "Volga": "Volga M21 badge sign.JPG",  # олень с капота ГАЗ-21 — символ марки
+    "Voyah": "Voyah Dream Logo, Auto 2024, Zurich (PANA0847-2).jpg",
     # Под CC BY и CC BY-SA: вырезки из фото значков и перерисованные простые логотипы. Файлы, где логотип взят с сайта
     # компании и помечен CC BY без разрешения (Borgward, Hennessey, Zenvo, Baojun, Arcfox), не брать.
     "Abarth": "Abarth Logo.png",
@@ -130,6 +151,7 @@ CHOSEN_FILES = {
 }
 # Автор для списка в приложении, когда поле Artist на Commons — ссылка или описание, а не имя.
 AUTHORS = {
+    "1936 Armstrong-Siddeley Atalanta bonnet mascot 49108522413 (cropped).jpg": "Andrew Bone",
     "Apollo logo - Flick - Concorso Italiano 2005.jpg": "Craig Howell",
     "Bandini automobili.JPG": "Ilario Bandini",
     "Eagle vision (cropped).jpg": "W. P. McMeans",
@@ -144,30 +166,46 @@ CROPS = {
     "Alfa Romeo": (0.12, 0.13, 0.76, 0.76),
     "Alpina": (0.185, 0.06, 0.61, 0.92),
     "Apollo": (0.27, 0.17, 0.46, 0.62),
+    "Arcfox": (0.483, 0.402, 0.072, 0.095),
+    "Armstrong Siddeley": (0.27, 0.32, 0.48, 0.42),
     "Berkeley": (0.21, 0.09, 0.66, 0.85),
     "Bestune": (0.07, 0.23, 0.22, 0.52),
+    "Bizzarrini": (0.01, 0.06, 0.98, 0.88),
+    "Borgward": (0.06, 0.04, 0.89, 0.92),
     "Cord": (0.17, 0.05, 0.71, 0.84),
     "Eagle": (0.13, 0.08, 0.66, 0.84),
     "Excalibur": (0.02, 0.03, 0.96, 0.94),
+    "Facel Vega": (0.03, 0.27, 0.89, 0.57),
     "Fisker": (0.40, 0.21, 0.20, 0.27),
     "Ginetta": (0.26, 0.21, 0.455, 0.58),
     "Glas": (0.06, 0.10, 0.90, 0.86),
+    "Hispano-Suiza": (0.04, 0.08, 0.92, 0.85),
     "Hotchkiss": (0.06, 0.16, 0.88, 0.80),
+    "Iran Khodro": (0.38, 0.06, 0.27, 0.32),
+    "IZh": (0.30, 0.17, 0.38, 0.67),
+    "Jensen": (0.03, 0.38, 0.91, 0.29),
+    "Kaiser": (0.31, 0.23, 0.41, 0.49),
     "Lagonda": (0.10, 0.34, 0.62, 0.48),
+    "Landwind": (0.598, 0.132, 0.132, 0.062),
+    "Mega": (0.205, 0.14, 0.555, 0.705),
     "Morgan": (0.06, 0.33, 0.88, 0.35),
     "Morris": (0.18, 0.29, 0.57, 0.57),
+    "Pagani": (0.30, 0.41, 0.46, 0.19),
+    "Proton": (0.175, 0.27, 0.28, 0.105),
     "Reliant": (0.24, 0.18, 0.54, 0.66),
+    "Roewe": (0.160, 0.502, 0.048, 0.104),
+    "Saleen": (0.33, 0.02, 0.50, 0.10),
     "Standard": (0.27, 0.16, 0.46, 0.62),
+    "Venturi": (0.06, 0.18, 0.83, 0.46),
+    "Voisin": (0.11, 0.24, 0.79, 0.46),
+    "Volga": (0.35, 0.18, 0.49, 0.44),
+    "Voyah": (0.39, 0.21, 0.24, 0.37),
 }
 # Круглые значки на фото: картинка заливает весь круг аватара, а не вписывается в белый.
-FILL = {"Alfa Romeo", "Alpina", "Apollo", "Berkeley", "Excalibur", "Fisker", "Ginetta", "Hotchkiss", "Standard"}
+FILL = {"Alfa Romeo", "Alpina", "Apollo", "Berkeley", "Excalibur", "Fisker", "Ginetta", "Hotchkiss", "IZh", "Mega", "Standard"}
 # Марка без своего логотипа, машины которой носят значок другой марки из списка.
 SAME_LOGO = {
     "Dongfeng Liuzhou": "Dongfeng",  # Forthing и Chenglong из Люйчжоу выходят с эмблемой Dongfeng
-}
-# Марки без логотипа: у бренда в Wikidata записан чужой.
-NO_LOGO = {
-    "IZh",  # логотип Lada: завод позже собирал Lada
 }
 
 SLUG_REPLACEMENTS = {"+": "plus", ".": "dot", "&": "and", "đ": "d", "ħ": "h", "ı": "i", "ĸ": "k", "ŀ": "l", "ł": "l",
@@ -330,7 +368,8 @@ def to_webp(thumb_url, cache, target, crop=None):
     source = cache / (hashlib.md5(thumb_url.encode()).hexdigest() + Path(thumb_url).suffix.lower())
     if not source.exists():
         # Подряд и с повторами: на параллельные запросы миниатюр Wikimedia отвечает 429.
-        subprocess.run(["curl", "-sf", "--retry", "5", "--retry-delay", "15", "-A", AGENT, "-o", str(source), thumb_url], check=True)
+        # -L: хост миниатюр отвечает на адреса оригиналов редиректом.
+        subprocess.run(["curl", "-sfL", "--retry", "5", "--retry-delay", "15", "-A", AGENT, "-o", str(source), thumb_url], check=True)
     data = source.read_bytes()
     size = image_size(data)
     if not size:
@@ -366,8 +405,6 @@ def main(makes_raw, raw, assets):
 
     logos = []
     for make in makes:
-        if make in NO_LOGO:
-            continue
         icon = None if make in SIMPLE_ICONS_NOT_CARS else icons.get(key(make))
         picked = None
         if make in CHOSEN_FILES:
@@ -379,8 +416,9 @@ def main(makes_raw, raw, assets):
             image = f"make_logos/{key(make)}.webp"
             source, crop = picked["thumb"], CROPS.get(make)
             if crop and picked["width"] > 250:
-                # Значок бывает четвертью кадра: обрезать миниатюру в 250 px — получить мыло.
-                source = picked["thumb"].replace("/250px-", "/1280px-") if picked["width"] > 1280 else picked["url"]
+                # Значок бывает малой долей кадра: картинка для обрезки нужна такая, чтобы он вышел хотя бы в 200 px.
+                enough = 200 / crop[2] <= 1280
+                source = picked["thumb"].replace("/250px-", "/1280px-") if picked["width"] > 1280 and enough else picked["url"]
             to_webp(source, cache, Path(assets, image), crop)
             logo = {"make": make, "image": image, "file": picked["file"]}
             if make in FILL:
