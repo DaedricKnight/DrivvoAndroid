@@ -58,6 +58,22 @@ class MakeLogosFileTest {
     }
 
     @Test
+    fun `images name their commons file and attribution licenses name the author`() {
+        logos.values.filter { it.image != null }.forEach { logo -> assertNotNull(logo.make, logo.file) }
+        logos.values.filter { it.license != null }.forEach { logo ->
+            assertTrue(logo.make, logo.license!!.startsWith("CC BY"))
+            assertTrue(logo.make, !logo.author.isNullOrBlank())
+        }
+    }
+
+    @Test
+    fun `commons page link escapes the file name`() {
+        val logo = MakeLogo("Abarth", image = "make_logos/abarth.webp", file = "Abarth Logo (2).png")
+
+        assertEquals("https://commons.wikimedia.org/wiki/File:Abarth_Logo_%282%29.png", logo.commonsPage)
+    }
+
+    @Test
     fun `vehicle without a make is matched by its name`() {
         val logo = MakeLogo("Škoda", path = "M0 0h24v24H0z", color = "4BA82E")
         val byKey = mapOf(searchKey(logo.make) to logo)

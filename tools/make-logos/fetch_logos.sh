@@ -47,14 +47,20 @@ echo "wikidata: $(ls "$out"/wikidata/logos_*.json | wc -l | tr -d ' ') batches"
 
 # Лицензия, размеры и миниатюра шириной 250 px каждого файла: других ширин, кроме стандартных, Commons не отдаёт.
 rm -f "$out"/commons/*
-python3 - "$out" <<'EOF'
-import glob, json, sys, urllib.parse
-out = sys.argv[1]
+# -B: сборщик подключается модулем, и без этого рядом с ним появился бы __pycache__.
+python3 -B - "$out" "$here" <<'EOF'
+import glob, importlib.util, json, sys, urllib.parse
+out, here = sys.argv[1:]
 files = set()
 for path in glob.glob(f"{out}/wikidata/logos_*.json"):
     with open(path, encoding="utf-8") as file:
         for row in json.load(file)["results"]["bindings"]:
             files.add("File:" + urllib.parse.unquote(row["file"]["value"].rsplit("/", 1)[1]))
+# Выбранные вручную файлы бывают и не записаны в Wikidata.
+spec = importlib.util.spec_from_file_location("build_make_logos", f"{here}/build_make_logos.py")
+builder = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(builder)
+files.update("File:" + name for name in builder.COMMONS_CHOICE.values())
 files = sorted(files)
 for start in range(0, len(files), 50):
     with open(f"{out}/commons/titles_{start // 50:03d}.txt", "w", encoding="utf-8") as file:
@@ -65,7 +71,7 @@ for batch in "$out"/commons/titles_*.txt; do
     curl -sf --retry 5 --retry-delay 10 --max-time 120 "https://commons.wikimedia.org/w/api.php" \
         --data-urlencode action=query --data-urlencode format=json --data-urlencode formatversion=2 \
         --data-urlencode prop=imageinfo --data-urlencode "iiprop=url|size|mime|extmetadata" \
-        --data-urlencode iiextmetadatafilter=License --data-urlencode iiurlwidth=250 \
+        --data-urlencode "iiextmetadatafilter=License|LicenseShortName|Artist" --data-urlencode iiurlwidth=250 \
         --data-urlencode redirects=1 --data-urlencode "titles@$batch" \
         -H "$agent" -o "$out/commons/info_${name#titles_}.json"
 done

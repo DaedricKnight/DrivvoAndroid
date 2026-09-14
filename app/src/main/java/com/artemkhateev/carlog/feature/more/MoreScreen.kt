@@ -31,16 +31,20 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.artemkhateev.carlog.R
+import com.artemkhateev.carlog.data.makes.commonsPage
 import com.artemkhateev.carlog.data.model.CatalogKind
+import com.artemkhateev.carlog.ui.components.LocalMakeLogos
 import com.artemkhateev.carlog.ui.navigation.AppNavigator
 import com.artemkhateev.carlog.ui.theme.CarLogTheme
 
@@ -73,10 +77,30 @@ fun MoreScreen(navigator: AppNavigator) {
     if (aboutOpen) {
         val context = LocalContext.current
         val version = runCatching { context.packageManager.getPackageInfo(context.packageName, 0).versionName }.getOrNull().orEmpty()
+        val logos = LocalMakeLogos.current
+        val credits = remember(logos) { logos.values.filter { it.license != null }.sortedBy { it.make } }
+        val uriHandler = LocalUriHandler.current
         AlertDialog(
             onDismissRequest = { aboutOpen = false },
             title = { Text(stringResource(R.string.app_name)) },
-            text = { Text(stringResource(R.string.about_text, version)) },
+            text = {
+                Column(Modifier.verticalScroll(rememberScrollState())) {
+                    Text(stringResource(R.string.about_text, version))
+                    Text(stringResource(R.string.about_logos), Modifier.padding(top = 12.dp, bottom = 4.dp))
+                    // CC BY и CC BY-SA требуют указать автора; строка открывает страницу файла с лицензией.
+                    credits.forEach { logo ->
+                        Text(
+                            text = stringResource(R.string.about_logo_credit, logo.make, logo.author.orEmpty(), logo.license.orEmpty()),
+                            style = CarLogTheme.typography.caption,
+                            color = CarLogTheme.colors.brand,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { logo.commonsPage?.let { page -> runCatching { uriHandler.openUri(page) } } }
+                                .padding(vertical = 6.dp),
+                        )
+                    }
+                }
+            },
             confirmButton = { TextButton(onClick = { aboutOpen = false }) { Text(stringResource(R.string.action_ok)) } },
         )
     }

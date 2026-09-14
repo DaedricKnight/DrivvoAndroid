@@ -4,6 +4,8 @@
 Значок марки — из Simple Icons (CC0): одноцветные контуры, нарисованные под мелкий размер; есть примерно у пятидесяти
 марок. Остальным — логотип бренда из Wikidata (P154, P8972, P2910): файл Wikimedia Commons в общественном достоянии
 или под CC0, в приложение едет его миниатюра в WebP. JPEG не берутся — почти всегда это фото значка на машине.
+Где свободного логотипа у бренда в Wikidata нет, файл Commons подобран вручную (COMMONS_CHOICE), в том числе под CC BY
+и CC BY-SA, если лицензия честная: автор и лицензия таких файлов попадают в make_logos.json и в список в приложении.
 
 Из логотипов бренда выбирается действующий, затем специальный значок, затем ближе к квадрату (в круге вытянутая
 надпись мельчит), затем основной и более новый. Эвристика ошибается: после пересборки просмотреть картинки глазами,
@@ -11,6 +13,7 @@
 """
 import datetime
 import hashlib
+import html
 import importlib.util
 import json
 import re
@@ -27,6 +30,11 @@ AGENT = "CarLogDataBuilder/1.0 (https://github.com/DaedricKnight/DrivvoAndroid)"
 # Сторона квадрата, в который вписывается картинка: в приложении значок не крупнее 40 dp.
 IMAGE_BOX = 128
 WEBP_OPTIONS = ["-lossless", "-z", "9"]
+# Годные файлы Commons: свободные от авторского права, векторные или PNG.
+FREE_LICENSES = ("pd", "cc0")
+IMAGE_TYPES = ("image/svg+xml", "image/png")
+# CC BY и CC BY-SA допустимы только у выбранных вручную: лицензия требует указать автора.
+ATTRIBUTION_LICENSE_PREFIX = "cc-by"
 
 # Одноимённые значки Simple Icons других компаний: Eagle — программа, Mega — облако, Proton — почта, Saturn — магазин.
 SIMPLE_ICONS_NOT_CARS = {"Eagle", "Mega", "Proton", "Saturn"}
@@ -34,7 +42,8 @@ SIMPLE_ICONS_NOT_CARS = {"Eagle", "Mega", "Proton", "Saturn"}
 PREFER_COMMONS = {
     "Bugatti",  # красный овал с решётки, а не монограмма EB
 }
-# Какой из логотипов бренда брать, когда эвристика выбирает не тот или значок Simple Icons не похож на значок машины.
+# Логотип, выбранный вручную: эвристика берёт не тот, значок Simple Icons не похож на значок машины или у бренда в Wikidata
+# свободного логотипа нет, а на Commons он есть. Сведения об этих файлах fetch_logos.sh выгружает сам.
 COMMONS_CHOICE = {
     "Audi": "Audi-Logo 2016.svg",  # у Simple Icons кольца фирменного красного, на машинах они чёрно-серебряные
     "BMW": "BMW.svg",  # цветная эмблема с машин; серая плоская 2020 года — для рекламы
@@ -44,6 +53,33 @@ COMMONS_CHOICE = {
     "Saab": "Saab wordmark blue.svg",  # серая надпись на белом круге не читается
     "SsangYong": "Ssangyong company logo.svg",  # иначе KGM — так марку называют только с 2023 года
     "Wuling": "Wuling Motor logo.png",  # иначе логотип совместного предприятия SGMW
+    # У брендов ниже в Wikidata свободного логотипа нет, файлы найдены поиском по Commons.
+    "Auto Union": "Auto Union Logo 1932.svg",
+    "Caterham": "Logo of Caterham Cars.png",
+    "Delahaye": "Delahayelogo.png",
+    "Jinbei": "Jinbei logo.png",
+    "Lifan": "Logo Chongqing Lifan.svg",
+    "Ligier": "Logo Ligier.svg",
+    "Matra": "Matra sports logo.svg",
+    "Nash": "Nash Motor Company logo (text).svg",
+    "Noble": "Noble wordmark.png",
+    "NSU": "NSU 1926 Logo.svg",
+    "Rivian": "Rivian Logo Mark Gold.png",
+    "Scion": "Scion logo.png",
+    "Sunbeam": "Sunbeam talbot logo.png",  # эмблема Sunbeam-Talbot — так марка называлась в 1938–1954 годах
+    # Под CC BY и CC BY-SA: вырезки из фото значков и перерисованные простые логотипы. Файлы, где логотип взят с сайта
+    # компании и помечен CC BY без разрешения (Borgward, Hennessey, Zenvo, Baojun, Arcfox), не брать.
+    "Abarth": "Abarth Logo.png",
+    "Amilcar": "Amilcar.svg",
+    "Changan": "Changan icon.svg",
+    "Iso Rivolta": "Emblem Iso Rivolta noBG.png",
+    "Salmson": "Salmson text only logo.png",
+    "Stoewer": "Emblem Stoewer noBG.png",
+}
+# Автор для списка в приложении, когда поле Artist на Commons — ссылка или описание, а не имя.
+AUTHORS = {
+    "Emblem Iso Rivolta noBG.png": "Brian Snelson, Auge=mit",
+    "Emblem Stoewer noBG.png": "Buch-t",
 }
 # Марки без логотипа: у бренда в Wikidata записан чужой.
 NO_LOGO = {
@@ -105,6 +141,8 @@ def load_files(raw):
             metadata = info.get("extmetadata") or {}
             files[page["title"]] = {
                 "license": metadata.get("License", {}).get("value", ""),
+                "license_name": metadata.get("LicenseShortName", {}).get("value", ""),
+                "author": " ".join(html.unescape(re.sub(r"<[^>]+>", " ", metadata.get("Artist", {}).get("value", ""))).split()),
                 "mime": info["mime"],
                 "width": info["width"],
                 "height": info["height"],
@@ -131,7 +169,7 @@ def commons_candidates(make, weights, statements, lookup):
     for item, weight in weights[make].most_common():
         for statement in statements.get(item, []):
             info = lookup(statement["file"])
-            if not info or info["license"] not in ("pd", "cc0") or info["mime"] not in ("image/svg+xml", "image/png"):
+            if not info or info["license"] not in FREE_LICENSES or info["mime"] not in IMAGE_TYPES:
                 continue
             candidate = found.setdefault(statement["file"], {
                 "file": statement["file"], **info, "ended": True, "icon": False, "preferred": False, "start": "", "weight": 0,
@@ -143,6 +181,14 @@ def commons_candidates(make, weights, statements, lookup):
             candidate["start"] = max(candidate["start"], statement["start"])
             candidate["weight"] = max(candidate["weight"], weight)
     return sorted(found.values(), key=candidate_order)
+
+
+def chosen_file(make, name, lookup):
+    info = lookup(name)
+    allowed = info and (info["license"] in FREE_LICENSES or info["license"].startswith(ATTRIBUTION_LICENSE_PREFIX))
+    if not allowed or info["mime"] not in IMAGE_TYPES:
+        sys.exit(f"{make}: «{name}» нет в выгрузке или лицензия не подходит — перезапустить fetch_logos.sh и проверить файл")
+    return {"file": name, **info}
 
 
 def simple_icons(raw):
@@ -194,17 +240,18 @@ def main(makes_raw, raw, assets):
             continue
         icon = None if make in SIMPLE_ICONS_NOT_CARS else icons.get(key(make))
         picked = None
-        if icon is None or make in PREFER_COMMONS or make in COMMONS_CHOICE:
+        if make in COMMONS_CHOICE:
+            picked = chosen_file(make, COMMONS_CHOICE[make], lookup)
+        elif icon is None or make in PREFER_COMMONS:
             candidates = commons_candidates(make, weights, statements, lookup)
-            if make in COMMONS_CHOICE:
-                candidates = [candidate for candidate in candidates if candidate["file"] == COMMONS_CHOICE[make]]
-                if not candidates:
-                    sys.exit(f"{make}: «{COMMONS_CHOICE[make]}» нет среди свободных логотипов бренда")
             picked = candidates[0] if candidates else None
         if picked:
             image = f"make_logos/{key(make)}.webp"
             to_webp(picked["thumb"], cache, Path(assets, image))
-            logos.append({"make": make, "image": image, "file": picked["file"]})
+            logo = {"make": make, "image": image, "file": picked["file"]}
+            if picked["license"].startswith(ATTRIBUTION_LICENSE_PREFIX):
+                logo.update(license=picked["license_name"], author=AUTHORS.get(picked["file"], picked["author"]))
+            logos.append(logo)
         elif icon:
             logos.append({"make": make, "path": icon["path"], "color": icon["color"], "icon": icon["slug"]})
 

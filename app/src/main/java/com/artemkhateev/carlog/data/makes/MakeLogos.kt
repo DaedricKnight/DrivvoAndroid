@@ -7,6 +7,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.InputStream
+import java.net.URLEncoder
 
 /** Логотип марки: контур из Simple Icons ([path] и [color]) либо картинка из Wikimedia Commons ([image]). */
 @Serializable
@@ -19,6 +20,11 @@ data class MakeLogo(
     val color: String? = null,
     /** Путь к картинке WebP в assets. */
     val image: String? = null,
+    /** Файл картинки на Wikimedia Commons. */
+    val file: String? = null,
+    /** Лицензия, требующая указать автора (CC BY, CC BY-SA); у файлов в общественном достоянии её нет. */
+    val license: String? = null,
+    val author: String? = null,
 )
 
 /** Файл `assets/make_logos.json`; собирает его `tools/make-logos`. */
@@ -49,3 +55,7 @@ class MakeLogosCatalog(private val open: () -> InputStream) {
 
 /** Логотип машины по марке, а без марки — по имени: машину часто так и называют. */
 fun Map<String, MakeLogo>.forVehicle(make: String, name: String): MakeLogo? = this[searchKey(make)] ?: this[searchKey(name)]
+
+/** Страница файла на Wikimedia Commons: там автор, лицензия и оригинал. */
+val MakeLogo.commonsPage: String?
+    get() = file?.let { "https://commons.wikimedia.org/wiki/File:" + URLEncoder.encode(it.replace(' ', '_'), "UTF-8") }
