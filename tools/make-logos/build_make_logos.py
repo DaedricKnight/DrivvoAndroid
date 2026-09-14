@@ -124,14 +124,17 @@ CHOSEN_FILES = {
     "Baojun": "Baojun 510 facelift 001.jpg",  # щит с головой коня — эмблема марки до 2019 года
     "Bizzarrini": "Emblem Bizzarrini Schriftzug.JPG",
     "Borgward": "Borgward Logo auf der IAA 2017.jpg",
+    "Changhe": "2016 BAIC-Changhe Freedom M50S, front 8.7.18.jpg",  # эмблема марки с 2013 года, когда её купил BAIC
     "Denza": "Denza Makati.jpg",  # вывеска салона
     "EVO": "EVO Cross 4.jpg",
     "Facel Vega": "1963 Facel Vega Facellia 3.jpg",
     "FAW": "2016 FAW Senya R7 (front).jpg",
     "GAC": "2021 GAC Trumpchi Empow (front).jpg",
     "Glickenhaus": "Glickenhaus 007 LMH bodywork in front of the pit garage at the 2022 Le Mans (54279838950).jpg",  # герб SCG у боксов
+    "Gordon Murray Automotive": "Gordon Murray Automotive T33S 2025.jpg",
     "Hafei": "Hafei Lobo HF J71000 2009 (12423256934).jpg",
     "Haima": "南京卡子门大街海马汽车 - panoramio.jpg",  # эмблема с вывески дилера
+    "Hennessey": "Geneva International Motor Show 2018, Le Grand-Saconnex (1X7A1389).jpg",  # надпись на стенде
     "Hispano-Suiza": "Hispano suiza logo.jpg",
     "Iran Khodro": "IKCO Nishapur Dealership (4).JPG",  # конь с вывески дилера
     "IZh": "ИЖ логотип.jpg",
@@ -141,14 +144,17 @@ CHOSEN_FILES = {
     "Karry": "Karry Dolphin 20231108.jpg",
     "Landwind": "Zotye T800 004.jpg",  # вывеска Landwind на соседнем стенде автосалона
     "Liebao": "2018 Changfeng-Liebao (Leopaard) CT7, front 8.16.18.jpg",
+    "London EV": "2021 LEVC VN5 City.jpg",  # крылатая эмблема на капоте
     "Mega": "Emblem Mega.JPG",
     "Nevo": "Qiyuan A07 001.jpg",  # Changan Qiyuan, за границей — Nevo
     "Pagani": "Geneva MotorShow 2013 - Pagani Huayra Pagani sign.jpg",
     "Proton": "Proton showroom in SS15, Subang Jaya.jpg",  # вывеска салона
     "Roewe": "2022 SAIC Roewe RX5 eMAX (front).jpg",
     "Saleen": "Saleen Mustang at the 2014 New York International Auto Show (13938795056).jpg",  # надпись над стендом
+    "SeAZ": "Oldtimer-2013 SMZ C3A 20130309 133508.JPG",  # значок мотоколяски С-3А: до 1990 года завод назывался СМЗ
     "Shuanghuan": "2011 Shuanghuan SCEO (front).jpg",
     "Sol": "Sehol QX 007.jpg",  # с 2020 года марка называется Sehol
+    "Ultima": "2005 Ultima GTR (12146).jpg",  # надпись на носу
     "Vector": "Vector W8 car badge.jpg",
     "Venucia": "2017 Dongfeng-Nissan Venucia D60 (front).jpg",
     "Venturi": "Emblem Venturi.JPG",
@@ -208,6 +214,7 @@ CROPS = {
     "Bestune": (0.07, 0.23, 0.22, 0.52),
     "Bizzarrini": (0.01, 0.06, 0.98, 0.88),
     "Borgward": (0.06, 0.04, 0.89, 0.92),
+    "Changhe": (0.1309, 0.5004, 0.0357, 0.0549),
     "Cord": (0.17, 0.05, 0.71, 0.84),
     "Denza": (0.2538, 0.1887, 0.0649, 0.098),
     "Eagle": (0.13, 0.08, 0.66, 0.84),
@@ -220,8 +227,10 @@ CROPS = {
     "Ginetta": (0.26, 0.21, 0.455, 0.58),
     "Glas": (0.06, 0.10, 0.90, 0.86),
     "Glickenhaus": (0.9605, 0.251, 0.0155, 0.042),
+    "Gordon Murray Automotive": (0.1215, 0.634, 0.0275, 0.037),
     "Hafei": (0.679, 0.598, 0.042, 0.068),
     "Haima": (0.471, 0.489, 0.085, 0.064),
+    "Hennessey": (0.149, 0.172, 0.160, 0.044),
     "Hispano-Suiza": (0.04, 0.08, 0.92, 0.85),
     "Hotchkiss": (0.06, 0.16, 0.88, 0.80),
     "Iran Khodro": (0.38, 0.06, 0.27, 0.32),
@@ -234,6 +243,7 @@ CROPS = {
     "Landwind": (0.598, 0.132, 0.132, 0.062),
     "LDV": (0.245, 0.606, 0.059, 0.042),
     "Liebao": (0.717, 0.452, 0.0535, 0.0555),
+    "London EV": (0.259, 0.4985, 0.051, 0.0175),
     "Marussia": (0.46, 0.715, 0.38, 0.115),
     "Mega": (0.205, 0.14, 0.555, 0.705),
     "Morgan": (0.06, 0.33, 0.88, 0.35),
@@ -246,9 +256,11 @@ CROPS = {
     "Reliant": (0.24, 0.18, 0.54, 0.66),
     "Roewe": (0.160, 0.502, 0.048, 0.104),
     "Saleen": (0.33, 0.02, 0.50, 0.10),
+    "SeAZ": (0.389, 0.64, 0.1075, 0.063),
     "Shuanghuan": (0.146, 0.459, 0.051, 0.071),
     "Sol": (0.785, 0.465, 0.0435, 0.0285),
     "Standard": (0.27, 0.16, 0.46, 0.62),
+    "Ultima": (0.2845, 0.6855, 0.0288, 0.017),
     "Vector": (0.05, 0.40, 0.89, 0.21),
     "Venucia": (0.140, 0.535, 0.031, 0.073),
     "Venturi": (0.06, 0.18, 0.83, 0.46),
@@ -260,7 +272,7 @@ CROPS = {
     "Zotye": (0.186, 0.394, 0.118, 0.078),
 }
 # Круглые значки на фото: картинка заливает весь круг аватара, а не вписывается в белый.
-FILL = {"Alfa Romeo", "Alpina", "Apollo", "Berkeley", "Denza", "Excalibur", "FAW", "Fisker", "GAC", "Ginetta", "Hotchkiss", "IZh", "Mega", "Standard"}
+FILL = {"Alfa Romeo", "Alpina", "Apollo", "Berkeley", "Changhe", "Denza", "Excalibur", "FAW", "Fisker", "GAC", "Ginetta", "Hotchkiss", "IZh", "Mega", "Standard"}
 # Марка без своего логотипа, машины которой носят значок другой марки из списка.
 SAME_LOGO = {
     "Aeolus": "Dongfeng",  # легковые Fengshen (Aeolus) носят на решётке эмблему Dongfeng
