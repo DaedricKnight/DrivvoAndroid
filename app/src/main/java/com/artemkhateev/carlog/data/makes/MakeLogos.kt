@@ -60,9 +60,13 @@ fun Map<String, MakeLogo>.forVehicle(make: String, name: String): MakeLogo? = th
 
 private val localFile = Regex("^([a-z-]+):(.+)$")
 
-/** Страница файла с автором, лицензией и оригиналом: на Wikimedia Commons, а у «en:…» — в разделе Википедии. */
+/**
+ * Страница файла с автором, лицензией и оригиналом: на Wikimedia Commons, у «en:…» — в разделе Википедии,
+ * а у фото с других сайтов (Flickr) в [MakeLogo.file] уже лежит адрес страницы.
+ */
 val MakeLogo.filePage: String?
     get() = file?.let { name ->
+        if (name.startsWith("https://")) return@let name
         val local = localFile.matchEntire(name)
         val host = local?.let { "${it.groupValues[1]}.wikipedia.org" } ?: "commons.wikimedia.org"
         val title = local?.groupValues?.get(2) ?: name

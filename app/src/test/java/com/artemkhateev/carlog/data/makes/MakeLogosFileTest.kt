@@ -71,8 +71,11 @@ class MakeLogosFileTest {
         val commons = MakeLogo("Abarth", image = "make_logos/abarth.webp", file = "Abarth Logo (2).png")
         val local = MakeLogo("GAZ", image = "make_logos/gaz.webp", file = "ru:GAZ-group-logo-2015.svg")
 
+        val flickr = MakeLogo("Zotye", image = "make_logos/zotye.webp", file = "https://www.flickr.com/photos/someone/123")
+
         assertEquals("https://commons.wikimedia.org/wiki/File:Abarth_Logo_%282%29.png", commons.filePage)
         assertEquals("https://ru.wikipedia.org/wiki/File:GAZ-group-logo-2015.svg", local.filePage)
+        assertEquals("https://www.flickr.com/photos/someone/123", flickr.filePage)
     }
 
     @Test

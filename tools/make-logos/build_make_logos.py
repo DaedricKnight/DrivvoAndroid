@@ -135,6 +135,7 @@ CHOSEN_FILES = {
     "Proton": "Proton showroom in SS15, Subang Jaya.jpg",  # вывеска салона
     "Roewe": "2022 SAIC Roewe RX5 eMAX (front).jpg",
     "Saleen": "Saleen Mustang at the 2014 New York International Auto Show (13938795056).jpg",  # надпись над стендом
+    "Vector": "Vector W8 car badge.jpg",
     "Venturi": "Emblem Venturi.JPG",
     "Voisin": "1924 Avions Voisin C4 logo, four cylinder without valve 8CV Coach body, 4 seats, at the Musée Automobile de Vendée.JPG",
     "Volga": "Volga M21 badge sign.JPG",  # олень с капота ГАЗ-21 — символ марки
@@ -160,6 +161,16 @@ AUTHORS = {
     "Logo ginetta.png": "Thomas's Pics",
     "Morgan badge - Flickr - exfordy.jpg": "Brian Snelson",
     "Standard veteran car (4915905345).jpg": "Peter Turvey",
+}
+# Фото не с Wikimedia (Flickr, найдены через Openverse): адрес картинки, страница, лицензия и автор записаны здесь,
+# выгружать о них нечего. В приложении строка автора ведёт на страницу фото.
+EXTERNAL_FILES = {
+    "Marussia": {"url": "https://live.staticflickr.com/8304/7787903070_9379c50e43_b.jpg",
+                 "page": "https://www.flickr.com/photos/22974618@N00/7787903070", "license": "CC BY-SA 2.0", "author": "Sergey Galyonkin"},
+    "Panther": {"url": "https://live.staticflickr.com/3389/3671285281_94d4d78409_b.jpg",
+                "page": "https://www.flickr.com/photos/32659528@N00/3671285281", "license": "CC BY 2.0", "author": "Brian Snelson"},
+    "UAZ": {"url": "https://live.staticflickr.com/1677/25085065193_55dcf39dd7_b.jpg",
+            "page": "https://www.flickr.com/photos/133136615@N03/25085065193", "license": "CC0 1.0", "author": "nicifor28"},
 }
 # Обрезка фото значка: доли картинки — слева, сверху, ширина, высота.
 CROPS = {
@@ -187,15 +198,18 @@ CROPS = {
     "Kaiser": (0.31, 0.23, 0.41, 0.49),
     "Lagonda": (0.10, 0.34, 0.62, 0.48),
     "Landwind": (0.598, 0.132, 0.132, 0.062),
+    "Marussia": (0.46, 0.715, 0.38, 0.115),
     "Mega": (0.205, 0.14, 0.555, 0.705),
     "Morgan": (0.06, 0.33, 0.88, 0.35),
     "Morris": (0.18, 0.29, 0.57, 0.57),
     "Pagani": (0.30, 0.41, 0.46, 0.19),
+    "Panther": (0.36, 0.14, 0.35, 0.115),
     "Proton": (0.175, 0.27, 0.28, 0.105),
     "Reliant": (0.24, 0.18, 0.54, 0.66),
     "Roewe": (0.160, 0.502, 0.048, 0.104),
     "Saleen": (0.33, 0.02, 0.50, 0.10),
     "Standard": (0.27, 0.16, 0.46, 0.62),
+    "Vector": (0.05, 0.40, 0.89, 0.21),
     "Venturi": (0.06, 0.18, 0.83, 0.46),
     "Voisin": (0.11, 0.24, 0.79, 0.46),
     "Volga": (0.35, 0.18, 0.49, 0.44),
@@ -409,6 +423,11 @@ def main(makes_raw, raw, assets):
         picked = None
         if make in CHOSEN_FILES:
             picked = chosen_file(make, CHOSEN_FILES[make], lookup)
+        elif make in EXTERNAL_FILES:
+            photo = EXTERNAL_FILES[make]
+            credit = photo["license"].startswith("CC BY")
+            picked = {"file": photo["page"], "url": photo["url"], "thumb": photo["url"], "width": 0, "license_name": photo["license"],
+                      "license": ATTRIBUTION_LICENSE_PREFIX if credit else "pd", "author": photo["author"]}
         elif icon is None or make in PREFER_COMMONS:
             candidates = commons_candidates(make, weights, statements, lookup)
             picked = candidates[0] if candidates else None
