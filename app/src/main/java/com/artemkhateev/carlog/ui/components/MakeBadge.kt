@@ -139,8 +139,12 @@ fun MakeLogoBadge(logo: MakeLogo, modifier: Modifier = Modifier, size: Dp = 36.d
             Image(
                 bitmap = bitmap,
                 contentDescription = null,
-                contentScale = ContentScale.Fit,
-                modifier = Modifier.size(fitInCircle(size, bitmap.width.toFloat() / bitmap.height)),
+                contentScale = if (logo.fill) ContentScale.Crop else ContentScale.Fit,
+                modifier = if (logo.fill) {
+                    Modifier.matchParentSize()
+                } else {
+                    Modifier.size(fitInCircle(size, bitmap.width.toFloat() / bitmap.height))
+                },
             )
         }
     }

@@ -67,10 +67,12 @@ class MakeLogosFileTest {
     }
 
     @Test
-    fun `commons page link escapes the file name`() {
-        val logo = MakeLogo("Abarth", image = "make_logos/abarth.webp", file = "Abarth Logo (2).png")
+    fun `file page link escapes the name and points local files to their wikipedia`() {
+        val commons = MakeLogo("Abarth", image = "make_logos/abarth.webp", file = "Abarth Logo (2).png")
+        val local = MakeLogo("GAZ", image = "make_logos/gaz.webp", file = "ru:GAZ-group-logo-2015.svg")
 
-        assertEquals("https://commons.wikimedia.org/wiki/File:Abarth_Logo_%282%29.png", logo.commonsPage)
+        assertEquals("https://commons.wikimedia.org/wiki/File:Abarth_Logo_%282%29.png", commons.filePage)
+        assertEquals("https://ru.wikipedia.org/wiki/File:GAZ-group-logo-2015.svg", local.filePage)
     }
 
     @Test

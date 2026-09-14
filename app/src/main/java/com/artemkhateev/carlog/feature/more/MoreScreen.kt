@@ -42,7 +42,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.artemkhateev.carlog.R
-import com.artemkhateev.carlog.data.makes.commonsPage
+import com.artemkhateev.carlog.data.makes.filePage
 import com.artemkhateev.carlog.data.model.CatalogKind
 import com.artemkhateev.carlog.ui.components.LocalMakeLogos
 import com.artemkhateev.carlog.ui.navigation.AppNavigator
@@ -95,7 +95,7 @@ fun MoreScreen(navigator: AppNavigator) {
                             color = CarLogTheme.colors.brand,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable { logo.commonsPage?.let { page -> runCatching { uriHandler.openUri(page) } } }
+                                .clickable { logo.filePage?.let { page -> runCatching { uriHandler.openUri(page) } } }
                                 .padding(vertical = 6.dp),
                         )
                     }

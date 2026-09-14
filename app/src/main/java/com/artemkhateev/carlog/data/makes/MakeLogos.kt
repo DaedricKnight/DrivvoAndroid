@@ -20,6 +20,8 @@ data class MakeLogo(
     val color: String? = null,
     /** Путь к картинке WebP в assets. */
     val image: String? = null,
+    /** Картинка — круглый значок с фото: заливает весь круг, а не вписывается в белый. */
+    val fill: Boolean = false,
     /** Файл картинки на Wikimedia Commons. */
     val file: String? = null,
     /** Лицензия, требующая указать автора (CC BY, CC BY-SA); у файлов в общественном достоянии её нет. */
@@ -56,6 +58,13 @@ class MakeLogosCatalog(private val open: () -> InputStream) {
 /** Логотип машины по марке, а без марки — по имени: машину часто так и называют. */
 fun Map<String, MakeLogo>.forVehicle(make: String, name: String): MakeLogo? = this[searchKey(make)] ?: this[searchKey(name)]
 
-/** Страница файла на Wikimedia Commons: там автор, лицензия и оригинал. */
-val MakeLogo.commonsPage: String?
-    get() = file?.let { "https://commons.wikimedia.org/wiki/File:" + URLEncoder.encode(it.replace(' ', '_'), "UTF-8") }
+private val localFile = Regex("^([a-z-]+):(.+)$")
+
+/** Страница файла с автором, лицензией и оригиналом: на Wikimedia Commons, а у «en:…» — в разделе Википедии. */
+val MakeLogo.filePage: String?
+    get() = file?.let { name ->
+        val local = localFile.matchEntire(name)
+        val host = local?.let { "${it.groupValues[1]}.wikipedia.org" } ?: "commons.wikimedia.org"
+        val title = local?.groupValues?.get(2) ?: name
+        "https://$host/wiki/File:" + URLEncoder.encode(title.replace(' ', '_'), "UTF-8")
+    }

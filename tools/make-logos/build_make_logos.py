@@ -4,8 +4,9 @@
 Значок марки — из Simple Icons (CC0): одноцветные контуры, нарисованные под мелкий размер; есть примерно у пятидесяти
 марок. Остальным — логотип бренда из Wikidata (P154, P8972, P2910): файл Wikimedia Commons в общественном достоянии
 или под CC0, в приложение едет его миниатюра в WebP. JPEG не берутся — почти всегда это фото значка на машине.
-Где свободного логотипа у бренда в Wikidata нет, файл Commons подобран вручную (COMMONS_CHOICE), в том числе под CC BY
-и CC BY-SA, если лицензия честная: автор и лицензия таких файлов попадают в make_logos.json и в список в приложении.
+Где свободного логотипа у бренда в Wikidata нет, файл подобран вручную (CHOSEN_FILES): с Commons или свободный локальный
+файл раздела Википедии, в том числе под CC BY и CC BY-SA, если лицензия честная. Автор и лицензия таких файлов попадают
+в make_logos.json и в список в приложении.
 
 Из логотипов бренда выбирается действующий, затем специальный значок, затем ближе к квадрату (в круге вытянутая
 надпись мельчит), затем основной и более новый. Эвристика ошибается: после пересборки просмотреть картинки глазами,
@@ -33,8 +34,14 @@ WEBP_OPTIONS = ["-lossless", "-z", "9"]
 # Годные файлы Commons: свободные от авторского права, векторные или PNG.
 FREE_LICENSES = ("pd", "cc0")
 IMAGE_TYPES = ("image/svg+xml", "image/png")
+# Выбранные вручную бывают и JPEG или GIF: сканы старых логотипов и фото значков.
+CHOSEN_IMAGE_TYPES = IMAGE_TYPES + ("image/jpeg", "image/gif")
 # CC BY и CC BY-SA допустимы только у выбранных вручную: лицензия требует указать автора.
 ATTRIBUTION_LICENSE_PREFIX = "cc-by"
+# Локальный файл раздела Википедии в ручном списке: «en:Имя файла».
+LOCAL_FILE = re.compile(r"^([a-z-]+):(.+)$")
+# В разделах Википедии общественное достояние бывает записано только словами.
+PUBLIC_DOMAIN = re.compile(r"public domain|общественное достояние", re.IGNORECASE)
 
 # Одноимённые значки Simple Icons других компаний: Eagle — программа, Mega — облако, Proton — почта, Saturn — магазин.
 SIMPLE_ICONS_NOT_CARS = {"Eagle", "Mega", "Proton", "Saturn"}
@@ -43,8 +50,8 @@ PREFER_COMMONS = {
     "Bugatti",  # красный овал с решётки, а не монограмма EB
 }
 # Логотип, выбранный вручную: эвристика берёт не тот, значок Simple Icons не похож на значок машины или у бренда в Wikidata
-# свободного логотипа нет, а на Commons он есть. Сведения об этих файлах fetch_logos.sh выгружает сам.
-COMMONS_CHOICE = {
+# свободного логотипа нет, а на Commons или в разделе Википедии он есть. Сведения об этих файлах fetch_logos.sh выгружает сам.
+CHOSEN_FILES = {
     "Audi": "Audi-Logo 2016.svg",  # у Simple Icons кольца фирменного красного, на машинах они чёрно-серебряные
     "BMW": "BMW.svg",  # цветная эмблема с машин; серая плоская 2020 года — для рекламы
     "Daewoo": "Logo wordmark DAEWOO Motors (2002-2016).svg",  # иначе надпись Daewoo Electronics
@@ -67,19 +74,96 @@ COMMONS_CHOICE = {
     "Rivian": "Rivian Logo Mark Gold.png",
     "Scion": "Scion logo.png",
     "Sunbeam": "Sunbeam talbot logo.png",  # эмблема Sunbeam-Talbot — так марка называлась в 1938–1954 годах
+    # Локальные файлы разделов Википедии в общественном достоянии — нашлись в статьях о бренде.
+    "Aero": "en:Aero Logo H-H-Linz.png",
+    "Allard": "en:Allard Motor Company Logo.svg",
+    "Fangchengbao": "en:Fangchengbao logo.png",
+    "GAZ": "ru:GAZ-group-logo-2015.svg",  # логотип «Группы ГАЗ»
+    "Genesis": "en:Genesis division emblem.svg",
+    "Hongqi": "en:Hongqi logo.svg",
+    "Lotus": "en:Lotus Cars logo.svg",
+    "Luxeed": "ar:Luxeed.svg",
+    "Talbot-Lago": "Talbot brand logo 1954.png",
+    "Weltmeister": "en:Weltmeister Logo.png",
+    # Логотипы брендов из Wikidata в JPEG и GIF: сканы старых логотипов и фото значков, у фото — обрезка в CROPS.
+    "Alfa Romeo": "ALFA ROMEO badge on a car (cropped).jpg",
+    "Alpina": "Alpina logo (4069775475).jpg",
+    "Apollo": "Apollo logo - Flick - Concorso Italiano 2005.jpg",
+    "Austin": "Logo Automobile Austin.jpg",
+    "Bandini": "Bandini automobili.JPG",
+    "Berkeley": "Emblem Berkeley.JPG",
+    "Bestune": "Bestune logo.jpg",
+    "Bristol": "Bristol-Signature-2019.jpg",
+    "Cord": "CordCrestTalla.jpg",
+    "Duesenberg": "Emblem Duesenberg.JPG",
+    "Eagle": "Eagle vision (cropped).jpg",
+    "Excalibur": "1984 Excalibur Phaeton Hubcap.jpg",
+    "Fisker": "Fisker, IAA Mobility 2023, Munich (P1110255).jpg",
+    "Glas": "Goggomobil Dart pic14.JPG",  # значок Goggomobil — главной машины Glas
+    "Hotchkiss": "Hotchkiss logo.jpg",
+    "Hudson": "Hudson-Motoring Magazine-1913-028.jpg",
+    "Jowett": "Jowett Short-chassis tourer 1926.JPG",
+    "Lagonda": "Aston Martin Lagonda Taraf 2016.jpg",
+    "Monteverdi": "Emblem MBM.JPG",
+    "Morgan": "Morgan badge - Flickr - exfordy.jpg",
+    "Morris": "Morris motor logo.jpg",
+    "Panhard": "Pl logo5.gif",
+    "Prince": "Prince Motor Company Marque.jpg",
+    "Reliant": "Reliant Motors badge.jpg",
+    "Rover": "Rover badge 1965.jpg",
+    "Shelby": "Shelby American logo.jpg",
+    "Standard": "Standard veteran car (4915905345).jpg",
+    "Triumph": "Triumph STandard Emblem.jpg",
+    "Wartburg": "Wartburg Automobil Logo (Alter Fritz).jpg",
+    "WiLL": "WiLL-Markenlogo.jpg",
+    "Wolseley": "Wolseley sign.jpg",
+    "Zastava": "Zastava Automobiles logo.jpg",
     # Под CC BY и CC BY-SA: вырезки из фото значков и перерисованные простые логотипы. Файлы, где логотип взят с сайта
     # компании и помечен CC BY без разрешения (Borgward, Hennessey, Zenvo, Baojun, Arcfox), не брать.
     "Abarth": "Abarth Logo.png",
     "Amilcar": "Amilcar.svg",
     "Changan": "Changan icon.svg",
+    "Ginetta": "Logo ginetta.png",
     "Iso Rivolta": "Emblem Iso Rivolta noBG.png",
     "Salmson": "Salmson text only logo.png",
     "Stoewer": "Emblem Stoewer noBG.png",
 }
 # Автор для списка в приложении, когда поле Artist на Commons — ссылка или описание, а не имя.
 AUTHORS = {
+    "Apollo logo - Flick - Concorso Italiano 2005.jpg": "Craig Howell",
+    "Bandini automobili.JPG": "Ilario Bandini",
+    "Eagle vision (cropped).jpg": "W. P. McMeans",
     "Emblem Iso Rivolta noBG.png": "Brian Snelson, Auge=mit",
     "Emblem Stoewer noBG.png": "Buch-t",
+    "Logo ginetta.png": "Thomas's Pics",
+    "Morgan badge - Flickr - exfordy.jpg": "Brian Snelson",
+    "Standard veteran car (4915905345).jpg": "Peter Turvey",
+}
+# Обрезка фото значка: доли картинки — слева, сверху, ширина, высота.
+CROPS = {
+    "Alfa Romeo": (0.12, 0.13, 0.76, 0.76),
+    "Alpina": (0.185, 0.06, 0.61, 0.92),
+    "Apollo": (0.27, 0.17, 0.46, 0.62),
+    "Berkeley": (0.21, 0.09, 0.66, 0.85),
+    "Bestune": (0.07, 0.23, 0.22, 0.52),
+    "Cord": (0.17, 0.05, 0.71, 0.84),
+    "Eagle": (0.13, 0.08, 0.66, 0.84),
+    "Excalibur": (0.02, 0.03, 0.96, 0.94),
+    "Fisker": (0.40, 0.21, 0.20, 0.27),
+    "Ginetta": (0.26, 0.21, 0.455, 0.58),
+    "Glas": (0.06, 0.10, 0.90, 0.86),
+    "Hotchkiss": (0.06, 0.16, 0.88, 0.80),
+    "Lagonda": (0.10, 0.34, 0.62, 0.48),
+    "Morgan": (0.06, 0.33, 0.88, 0.35),
+    "Morris": (0.18, 0.29, 0.57, 0.57),
+    "Reliant": (0.24, 0.18, 0.54, 0.66),
+    "Standard": (0.27, 0.16, 0.46, 0.62),
+}
+# Круглые значки на фото: картинка заливает весь круг аватара, а не вписывается в белый.
+FILL = {"Alfa Romeo", "Alpina", "Apollo", "Berkeley", "Excalibur", "Fisker", "Ginetta", "Hotchkiss", "Standard"}
+# Марка без своего логотипа, машины которой носят значок другой марки из списка.
+SAME_LOGO = {
+    "Dongfeng Liuzhou": "Dongfeng",  # Forthing и Chenglong из Люйчжоу выходят с эмблемой Dongfeng
 }
 # Марки без логотипа: у бренда в Wikidata записан чужой.
 NO_LOGO = {
@@ -126,30 +210,45 @@ def load_statements(raw):
     return statements
 
 
+def file_info(info):
+    # У файла без сведений о лицензии API отдаёт пустой список вместо словаря.
+    metadata = info.get("extmetadata") or {}
+    license = metadata.get("License", {}).get("value", "")
+    license_name = metadata.get("LicenseShortName", {}).get("value", "")
+    return {
+        "license": "pd" if not license and PUBLIC_DOMAIN.search(license_name) else license,
+        "license_name": license_name,
+        "nonfree": bool(metadata.get("NonFree", {}).get("value")),
+        "author": " ".join(html.unescape(re.sub(r"<[^>]+>", " ", metadata.get("Artist", {}).get("value", ""))).split()),
+        "mime": info["mime"],
+        "width": info["width"],
+        "height": info["height"],
+        "url": info["url"],
+        "thumb": (info.get("thumburl") or info["url"]).split("?")[0],
+    }
+
+
 def load_files(raw):
-    """Метаданные файлов Commons: имя файла → лицензия, тип, размеры, миниатюра."""
+    """Метаданные файлов: имя файла Commons или «язык:имя» локального файла раздела → лицензия, тип, размеры, миниатюра."""
     files, renamed = {}, {}
     for path in sorted(Path(raw, "commons").glob("info_*.json")):
         query = json.loads(path.read_text(encoding="utf-8"))["query"]
         for pair in query.get("normalized", []) + query.get("redirects", []):
             renamed[pair["from"]] = pair["to"]
         for page in query["pages"]:
-            if page.get("missing") or not page.get("imageinfo"):
-                continue
-            info = page["imageinfo"][0]
-            # У файла без сведений о лицензии API отдаёт пустой список вместо словаря.
-            metadata = info.get("extmetadata") or {}
-            files[page["title"]] = {
-                "license": metadata.get("License", {}).get("value", ""),
-                "license_name": metadata.get("LicenseShortName", {}).get("value", ""),
-                "author": " ".join(html.unescape(re.sub(r"<[^>]+>", " ", metadata.get("Artist", {}).get("value", ""))).split()),
-                "mime": info["mime"],
-                "width": info["width"],
-                "height": info["height"],
-                "thumb": (info.get("thumburl") or info["url"]).split("?")[0],
-            }
+            if not page.get("missing") and page.get("imageinfo"):
+                files[page["title"]] = file_info(page["imageinfo"][0])
+    for path in sorted(Path(raw, "local").glob("*.json")):
+        for page in json.loads(path.read_text(encoding="utf-8"))["query"]["pages"]:
+            if not page.get("missing") and page.get("imageinfo"):
+                info = file_info(page["imageinfo"][0])
+                # Раздел может показать и несвободный файл «добросовестного использования» — такие не нужны.
+                if not info["nonfree"]:
+                    files[f"{path.stem}:{page['title'].split(':', 1)[1]}"] = info
 
     def lookup(name):
+        if LOCAL_FILE.match(name):
+            return files.get(name)
         title = "File:" + name
         title = renamed.get(title, title)
         return files.get(renamed.get(title, title))
@@ -186,7 +285,7 @@ def commons_candidates(make, weights, statements, lookup):
 def chosen_file(make, name, lookup):
     info = lookup(name)
     allowed = info and (info["license"] in FREE_LICENSES or info["license"].startswith(ATTRIBUTION_LICENSE_PREFIX))
-    if not allowed or info["mime"] not in IMAGE_TYPES:
+    if not allowed or info["mime"] not in CHOSEN_IMAGE_TYPES:
         sys.exit(f"{make}: «{name}» нет в выгрузке или лицензия не подходит — перезапустить fetch_logos.sh и проверить файл")
     return {"file": name, **info}
 
@@ -209,18 +308,49 @@ def simple_icons(raw):
     return version, icons
 
 
-def to_webp(thumb_url, cache, target):
-    png = cache / (hashlib.md5(thumb_url.encode()).hexdigest() + ".png")
-    if not png.exists():
+def image_size(data):
+    """Ширина и высота PNG, GIF или JPEG по заголовку; None — другой формат."""
+    if data[:8] == b"\x89PNG\r\n\x1a\n":
+        return struct.unpack(">II", data[16:24])
+    if data[:6] in (b"GIF87a", b"GIF89a"):
+        return struct.unpack("<HH", data[6:10])
+    if data[:2] == b"\xff\xd8":
+        offset = 2
+        while offset + 9 < len(data):
+            marker = data[offset + 1]
+            # SOF0–SOF15, кроме DHT, JPG и DAC: в нём размеры кадра.
+            if 0xC0 <= marker <= 0xCF and marker not in (0xC4, 0xC8, 0xCC):
+                height, width = struct.unpack(">HH", data[offset + 5:offset + 9])
+                return width, height
+            offset += 2 + struct.unpack(">H", data[offset + 2:offset + 4])[0]
+    return None
+
+
+def to_webp(thumb_url, cache, target, crop=None):
+    source = cache / (hashlib.md5(thumb_url.encode()).hexdigest() + Path(thumb_url).suffix.lower())
+    if not source.exists():
         # Подряд и с повторами: на параллельные запросы миниатюр Wikimedia отвечает 429.
-        subprocess.run(["curl", "-sf", "--retry", "5", "--retry-delay", "15", "-A", AGENT, "-o", str(png), thumb_url], check=True)
-    header = png.read_bytes()[:24]
-    if header[:8] != b"\x89PNG\r\n\x1a\n":
-        sys.exit(f"не PNG: {thumb_url}")
-    width, height = struct.unpack(">II", header[16:24])
+        subprocess.run(["curl", "-sf", "--retry", "5", "--retry-delay", "15", "-A", AGENT, "-o", str(source), thumb_url], check=True)
+    data = source.read_bytes()
+    size = image_size(data)
+    if not size:
+        sys.exit(f"не PNG, GIF или JPEG: {thumb_url}")
+    if data[:3] == b"GIF":
+        # GIF cwebp не читает; миниатюра и так мала, а обрезать сканы логотипов не нужно.
+        if crop:
+            sys.exit(f"обрезка GIF не поддерживается: {thumb_url}")
+        subprocess.run(["gif2webp", "-quiet", str(source), "-o", str(target)], check=True)
+        return
+    width, height = size
+    # Фото значка без потерь весило бы в разы больше, а разницы на 40 dp не видно.
+    options = list(WEBP_OPTIONS) if data[:4] == b"\x89PNG" else ["-q", "85"]
+    if crop:
+        left, top, crop_width, crop_height = (round(part * side) for part, side in zip(crop, (width, height, width, height)))
+        options += ["-crop", str(left), str(top), str(crop_width), str(crop_height)]
+        width, height = crop_width, crop_height
     scale = min(1, IMAGE_BOX / max(width, height))
-    size = [str(max(1, round(width * scale))), str(max(1, round(height * scale)))]
-    subprocess.run(["cwebp", "-quiet", *WEBP_OPTIONS, "-resize", *size, str(png), "-o", str(target)], check=True)
+    options += ["-resize", str(max(1, round(width * scale))), str(max(1, round(height * scale)))]
+    subprocess.run(["cwebp", "-quiet", *options, str(source), "-o", str(target)], check=True)
 
 
 def main(makes_raw, raw, assets):
@@ -240,20 +370,33 @@ def main(makes_raw, raw, assets):
             continue
         icon = None if make in SIMPLE_ICONS_NOT_CARS else icons.get(key(make))
         picked = None
-        if make in COMMONS_CHOICE:
-            picked = chosen_file(make, COMMONS_CHOICE[make], lookup)
+        if make in CHOSEN_FILES:
+            picked = chosen_file(make, CHOSEN_FILES[make], lookup)
         elif icon is None or make in PREFER_COMMONS:
             candidates = commons_candidates(make, weights, statements, lookup)
             picked = candidates[0] if candidates else None
         if picked:
             image = f"make_logos/{key(make)}.webp"
-            to_webp(picked["thumb"], cache, Path(assets, image))
+            source, crop = picked["thumb"], CROPS.get(make)
+            if crop and picked["width"] > 250:
+                # Значок бывает четвертью кадра: обрезать миниатюру в 250 px — получить мыло.
+                source = picked["thumb"].replace("/250px-", "/1280px-") if picked["width"] > 1280 else picked["url"]
+            to_webp(source, cache, Path(assets, image), crop)
             logo = {"make": make, "image": image, "file": picked["file"]}
+            if make in FILL:
+                logo["fill"] = True
             if picked["license"].startswith(ATTRIBUTION_LICENSE_PREFIX):
                 logo.update(license=picked["license_name"], author=AUTHORS.get(picked["file"], picked["author"]))
             logos.append(logo)
         elif icon:
             logos.append({"make": make, "path": icon["path"], "color": icon["color"], "icon": icon["slug"]})
+
+    for make, other in SAME_LOGO.items():
+        same = next((logo for logo in logos if logo["make"] == other), None)
+        if same and all(logo["make"] != make for logo in logos):
+            logos.append({**same, "make": make})
+    order = {make: index for index, make in enumerate(makes)}
+    logos.sort(key=lambda logo: order[logo["make"]])
 
     used = {Path(logo["image"]).name for logo in logos if "image" in logo}
     for stale in images.iterdir():
